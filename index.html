@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Bio Track — agricultural intelligence for commercial farms. Live weather for your coordinates, real market prices, and the value of everything in the barn and on the hoof, joined into decisions.">
+<title>Bio Track · Agricultural intelligence</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/landing.css">
+</head>
+<body class="landing">
+
+<a class="skip-link" href="#enter">Skip to log in</a>
+
+<!-- The photograph: an agricultural drone over crop rows. Unsplash licence. -->
+<div class="backdrop" aria-hidden="true">
+  <img class="backdrop-photo"
+       src="https://images.unsplash.com/photo-1713952160156-bb59cac789a9?auto=format&fit=crop&w=2000&q=80"
+       srcset="https://images.unsplash.com/photo-1713952160156-bb59cac789a9?auto=format&fit=crop&w=1200&q=75 1200w,
+               https://images.unsplash.com/photo-1713952160156-bb59cac789a9?auto=format&fit=crop&w=2000&q=80 2000w,
+               https://images.unsplash.com/photo-1713952160156-bb59cac789a9?auto=format&fit=crop&w=2800&q=80 2800w"
+       sizes="100vw"
+       alt="">
+  <div class="backdrop-shade"></div>
+  <div class="backdrop-grid"></div>
+</div>
+
+<header class="top">
+  <a class="brand" href="index.html">
+    <span class="brand-mark">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 21h10"/><path d="M12 21V10"/><path d="M12 10C12 6 9 4 5 4c0 4 3 6 7 6Z"/><path d="M12 13c0-3 2.5-5 6-5 0 3-2.5 5-6 5Z"/></svg>
+    </span>
+    <span class="brand-text">Bio Track<small>See Tomorrow's Harvest Today</small></span>
+  </a>
+  <nav class="top-nav" aria-label="Primary">
+    <span class="top-status" id="topStatus"><span ></span> Live feeds connected</span>
+   
+  </nav>
+</header>
+
+<main class="hero" id="main">
+  <div class="hero-copy">
+    <p class="eyebrow reveal" style="--i:0">
+      
+     
+      
+    </p>
+
+    <h1 class="reveal" style="--i:1">
+      The whole farm,<br>
+      <span class="accent">one glance ahead.</span>
+    </h1>
+
+    <p class="lede reveal" style="--i:2">
+    </p>
+
+    <div class="cta reveal" style="--i:3" id="enter">
+      <a class="btn btn-primary" href="cockpit.html">
+        Log in to the cockpit
+      </a>
+    </div>
+
+    <ul class="proof reveal" style="--i:4" aria-label="Data sources">
+      <li><span class="dot live"></span> Open-Meteo forecast live<br></li>
+      <li><span class="dot live"></span> WFP market prices via HDX monthly<br></li>
+      <li><span class="dot model"></span> FAO-56 water balance · degree days THI</li>
+    </ul>
+  </div>
+
+  <!-- Telemetry: these are real. Weather for the default location, prices
+       from the bundled WFP snapshot. If either is unreachable the chip says so. -->
+  <aside class="telemetry" aria-label="Live telemetry">
+    <div class="chip chip-a reveal" style="--i:2" id="chipWeather">
+      <span class="chip-label">Ibadan now</span>
+      <span class="chip-value"><span data-el="temp">—</span><span class="unit">°C</span></span>
+      <span class="chip-sub" data-el="cond">Reading the sky…</span>
+    </div>
+    <div class="chip chip-b reveal" style="--i:3" id="chipSoil">
+      <span class="chip-label">Topsoil water</span>
+      <span class="chip-value"><span data-el="soil">—</span><span class="unit">%</span></span>
+      <span class="chip-sub" data-el="et0">ET₀ — mm/day</span>
+    </div>
+    <div class="chip chip-c reveal" style="--i:4" id="chipPrice">
+      <span class="chip-label" data-el="priceLabel">Rice (local) · WFP</span>
+      <span class="chip-value"><span class="unit">₦</span><span data-el="price">—</span><span class="unit">/kg</span></span>
+      <span class="chip-sub" data-el="priceSub">Loading the snapshot…</span>
+    </div>
+    <div class="chip chip-d reveal" style="--i:5" id="chipHarvest">
+      <span class="chip-label">Harvest alert</span>
+      <span class="chip-value small" data-el="harvest">—</span>
+      <span class="chip-sub" data-el="harvestSub">—</span>
+    </div>
+  </aside>
+</main>
+
+<footer class="foot">
+  <span>© <span id="year"></span> Bio Track · a decision cockpit for commercial farms</span>
+  <span class="foot-photo">Photo: Unsplash</span>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="data/prices-snapshot.js"></script>
+<script src="js/landing.js"></script>
+</body>
+</html>

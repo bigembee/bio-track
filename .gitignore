@@ -1,0 +1,9 @@
+# local tooling and scratch
+.claude/
+.vercel/
+*.bak
+__pycache__/
+*.pyc
+
+# the author's original single-page drafts, kept locally
+Dashboard/
