@@ -7,3 +7,6 @@ __pycache__/
 
 # the author's original single-page drafts, kept locally
 Dashboard/
+
+.vercel
+.env*

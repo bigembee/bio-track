@@ -1,5 +1,7 @@
 # Bio Track — Agricultural Intelligence Dashboard
 
+**Live demo: <https://bio-track-blond.vercel.app>**
+
 A decision cockpit for a commercial farm. It answers one question at a glance:
 **what is the farm worth right now — in the barn and on the hoof — and what should
 I do about it today?**
