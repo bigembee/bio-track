@@ -216,7 +216,7 @@
       tile.appendChild(top);
       tile.appendChild(tag('div', 'field-crop', crop.name));
       tile.appendChild(tag('div', 'field-meta', field.hectares + ' ha · ' + (kg ? fmt.mass(kg) + ' in store' : 'nothing in store')));
-      tile.appendChild(tag('div', 'field-value', value ? fmt.money(value) : '—'));
+      tile.appendChild(tag('div', 'field-value', value ? fmt.money(value) : 'n/a'));
       if (planting) {
         var line = tag('div', 'field-harvest');
         line.appendChild(badge(planting.tone === 'ok' ? 'ok' : planting.tone, planting.status === 'growing' ? 'i-sprout' : 'i-harvest', planting.label));
@@ -364,7 +364,7 @@
     buildLegend('herdMixLegend', stock.herds);
     setText(el('herdMixCaption'), s.topHerd
       ? s.topHerd + ' carry ' + fmt.pct(s.concentration, 0) + ' of livestock value. Layers are held at book value; every other herd is priced as carcass weight at this month’s meat price.'
-      : '—');
+      : 'n/a');
 
     renderHeat(ctx);
     renderHealth(ctx);

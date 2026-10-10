@@ -41,13 +41,13 @@
     setText(el('ckHerds'), String(cfg.livestock.herds.length));
 
     var w = ctx.weather;
-    var place = ctx.location ? ctx.location.name + ', ' + ctx.location.region : '—';
+    var place = ctx.location ? ctx.location.name + ', ' + ctx.location.region : 'n/a';
     setText(el('ckPlace'), place);
 
     if (!w) {
-      setText(el('ckTemp'), '—');
+      setText(el('ckTemp'), 'n/a');
       setText(el('ckCond'), ctx.weatherError ? 'Forecast unavailable' : 'Reading the sky…');
-      setText(el('ckHL'), '—');
+      setText(el('ckHL'), 'n/a');
       return;
     }
 
@@ -89,7 +89,7 @@
     var w = ctx.weather;
 
     if (w) {
-      setText(el('tileSoil'), w.soil.moisturePct != null ? w.soil.moisturePct.toFixed(1) + '%' : '—');
+      setText(el('tileSoil'), w.soil.moisturePct != null ? w.soil.moisturePct.toFixed(1) + '%' : 'n/a');
       var et0 = w.daily[0] && w.daily[0].et0 != null ? w.daily[0].et0.toFixed(1) : null;
       setText(el('tileSoilNote'),
         (w.soil.temp != null ? 'Soil ' + Math.round(w.soil.temp) + '° · ' : '') +
@@ -97,12 +97,12 @@
         (ctx.irrigation.summary.dueCount ? ' · ' + ctx.irrigation.summary.dueCount + ' zone(s) due' : ''));
 
       setText(el('tileHumidity'), Math.round(w.current.humidity) + '%');
-      setText(el('tileHumidityNote'), w.next48.humidHours + ' of the next 48 hours above 85% — the band disease needs');
+      setText(el('tileHumidityNote'), w.next48.humidHours + ' of the next 48 hours above 85%; the band disease needs');
 
       setText(el('tileRain'), w.next48.precipTotal.toFixed(1) + ' mm');
       setText(el('tileRainNote'), 'Peaking at ' + w.next48.maxProb + '% chance · ' + Math.round(w.current.wind) + ' km/h wind now');
     } else {
-      ['tileSoil', 'tileHumidity', 'tileRain'].forEach(function (k) { setText(el(k), '—'); });
+      ['tileSoil', 'tileHumidity', 'tileRain'].forEach(function (k) { setText(el(k), 'n/a'); });
       ['tileSoilNote', 'tileHumidityNote', 'tileRainNote'].forEach(function (k) {
         setText(el(k), ctx.weatherError ? 'Needs the forecast' : 'Waiting on the forecast…');
       });
@@ -127,7 +127,7 @@
      The market feed - every instrument, with where its price came from
      ===================================================================== */
 
-  var MODE_NOTE = { proxy: 'Proxy series', modelled: 'Modelled — no WFP series' };
+  var MODE_NOTE = { proxy: 'Proxy series', modelled: 'Modelled, no WFP series' };
 
   function renderFeed(ctx) {
     var host = el('ckFeed');
@@ -136,7 +136,7 @@
     var ms = NS.market.status;
     setText(el('ckCrops'), String(NS.market.ids('crop').length));
     setText(el('ckStock'), String(NS.market.ids('livestock').length));
-    setText(el('ckPeriod'), ms.periodLabel ? fmt.monthYear(fmt.monthToDate(ms.period)) : '—');
+    setText(el('ckPeriod'), ms.periodLabel ? fmt.monthYear(fmt.monthToDate(ms.period)) : 'n/a');
 
     NS.market.ids().forEach(function (id) {
       var q = ctx.quotes[id];

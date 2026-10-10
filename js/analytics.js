@@ -37,7 +37,7 @@
    * Enrich every lot with its live value. Returns a new array; the
    * config data is never mutated.
    *
-   * `constraints` maps a field to a rule that stops its produce being sold —
+   * `constraints` maps a field to a rule that stops its produce being sold,
    * in practice a pre-harvest interval from the pest module. Analytics does
    * not know what a pesticide is; it only knows this block cannot be sold
    * for N more days, which is enough to price the consequence.

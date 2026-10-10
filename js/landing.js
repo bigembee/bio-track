@@ -48,14 +48,14 @@
         var idx = 0;
         (raw.hourly.time || []).some(function (t, i) { if (new Date(t).getTime() >= now) { idx = i; return true; } return false; });
         var sm = raw.hourly.soil_moisture_0_to_1cm[idx];
-        setText('soil', sm != null ? (sm * 100).toFixed(0) : '—');
+        setText('soil', sm != null ? (sm * 100).toFixed(0) : 'n/a');
         var et0 = raw.daily.et0_fao_evapotranspiration[0];
-        setText('et0', 'ET₀ ' + (et0 != null ? et0.toFixed(1) : '—') + ' mm/day · Open-Meteo, live');
+        setText('et0', 'ET₀ ' + (et0 != null ? et0.toFixed(1) : 'n/a') + ' mm/day · Open-Meteo, live');
       })
       .catch(function (err) {
         chipW.setAttribute('data-state', 'error');
         chipS.setAttribute('data-state', 'error');
-        setText('cond', 'Forecast unreachable — ' + err.message);
+        setText('cond', 'Forecast unreachable, ' + err.message);
         setText('et0', 'Open-Meteo did not answer');
         throw err;
       });

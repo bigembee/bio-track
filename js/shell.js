@@ -30,8 +30,8 @@
   /* ---------- markup ---------- */
 
   /**
-   * A rail chip. The label is always in the DOM — a screen reader reads it,
-   * and the mobile drawer shows it — but CSS hides it on the narrow rail,
+   * A rail chip. The label is always in the DOM; a screen reader reads it,
+   * and the mobile drawer shows it, but CSS hides it on the narrow rail,
    * where the title attribute carries it as a tooltip instead.
    */
   function navLink(group) {
@@ -60,7 +60,7 @@
     var brand = tag('a', 'brand');
     brand.href = 'cockpit.html';
     brand.title = 'Bio Track';
-    brand.setAttribute('aria-label', 'Bio Track — go to the cockpit');
+    brand.setAttribute('aria-label', 'Bio Track, go to the cockpit');
     var mark = tag('span', 'brand-mark');
     var logo = document.createElement('img');
     logo.src = 'assets/favicon.png';
@@ -121,7 +121,7 @@
 
     var titles = tag('div', 'topbar-title');
     var h1 = tag('h1'); h1.setAttribute('data-el', 'greeting'); h1.textContent = 'Good day';
-    var p = tag('p'); p.setAttribute('data-el', 'dateLine'); p.textContent = '—';
+    var p = tag('p'); p.setAttribute('data-el', 'dateLine'); p.textContent = '…';
     titles.appendChild(h1); titles.appendChild(p);
     header.appendChild(titles);
 
@@ -178,7 +178,7 @@
     panel.setAttribute('aria-label', 'Alerts');
     var head = tag('div', 'alerts-head');
     head.appendChild(tag('h3', null, 'Alerts'));
-    var sub = tag('span', 'eyebrow'); sub.setAttribute('data-el', 'alertsSub'); sub.textContent = '—';
+    var sub = tag('span', 'eyebrow'); sub.setAttribute('data-el', 'alertsSub'); sub.textContent = '…';
     head.appendChild(sub);
     panel.appendChild(head);
     var body = tag('div', 'alerts-body'); body.setAttribute('data-el', 'alertsBody');
@@ -197,7 +197,7 @@
     var label = tag('div', 'board-label');
     label.appendChild(icon('i-board'));
     label.appendChild(document.createTextNode(' Market board'));
-    var vintage = tag('span', 'board-vintage'); vintage.setAttribute('data-el', 'boardVintage'); vintage.textContent = '—';
+    var vintage = tag('span', 'board-vintage'); vintage.setAttribute('data-el', 'boardVintage'); vintage.textContent = '…';
     label.appendChild(vintage);
     inner.appendChild(label);
 
@@ -219,7 +219,7 @@
       var span = tag('span');
       span.appendChild(tag('strong', null, strong));
       span.appendChild(document.createTextNode(' '));
-      var code = tag('span'); code.setAttribute('data-el', elName); code.textContent = '—';
+      var code = tag('span'); code.setAttribute('data-el', elName); code.textContent = '…';
       span.appendChild(code);
       return span;
     }
@@ -243,8 +243,8 @@
 
   /**
    * The hamburger does two different jobs depending on the screen.
-   *   narrow (≤ 860px): the sidebar is a drawer over the page — open/close it.
-   *   wide:             the sidebar is a column — collapse/expand it, and
+   *   narrow (≤ 860px): the sidebar is a drawer over the page, open/close it.
+   *   wide:             the sidebar is a column, collapse/expand it, and
    *                     remember the choice so it stays put across pages.
    */
   var COLLAPSE_KEY = 'sidebarCollapsed';
@@ -436,8 +436,8 @@
         var cell = tag('div', 'board-cell');
         var name = tag('span', 'board-crop', inst.name);
         cell.appendChild(name);
-        var price = tag('span', 'board-price', '—');
-        var delta = tag('span', 'board-delta flat', '—');
+        var price = tag('span', 'board-price', '…');
+        var delta = tag('span', 'board-delta flat', '…');
         var mode = tag('span', 'board-mode', '');
         cell.appendChild(price);
         cell.appendChild(delta);
@@ -463,11 +463,11 @@
       setText(refs.mode, MODE_LABEL[q.mode] || q.mode);
       refs.mode.className = 'board-mode is-' + q.mode;
       refs.cell.title = q.note;
-      if (was !== '—' && was !== now) dom.flash(refs.cell, q.change > 0 ? 1 : -1);
+      if (was !== '…' && was !== 'n/a' && was !== now) dom.flash(refs.cell, q.change > 0 ? 1 : -1);
     });
 
     var s = NS.market.status;
-    var vintage = s.periodLabel ? s.periodLabel : '—';
+    var vintage = s.periodLabel ? s.periodLabel : 'n/a';
     if (s.tier === 'snapshot') vintage += ' · bundled snapshot';
     else if (s.tier === 'cache') vintage += ' · cached ' + fmt.ago(s.fetchedAt);
     else if (s.tier === 'live') vintage += ' · fetched ' + fmt.ago(s.fetchedAt);
@@ -556,7 +556,7 @@
     if (perm === 'granted') {
       var ok = tag('span', 'chip up');
       ok.appendChild(icon('i-check'));
-      ok.appendChild(document.createTextNode(' Browser pings on — once a day per block'));
+      ok.appendChild(document.createTextNode(' Browser pings on, once a day per block'));
       foot.appendChild(ok);
     } else if (perm === 'denied') {
       foot.appendChild(tag('span', 'chip', 'Browser notifications are blocked for this site'));

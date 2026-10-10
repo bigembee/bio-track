@@ -80,11 +80,11 @@
     var strength = Math.round(Math.abs(quote.price / quote.ma12 - 1) * 100);
     var lead;
     if (code === 'sell' || code === 'soon') {
-      lead = crop.name + ' is ' + strength + '% above its 12-month average — worth selling straight off the field.';
+      lead = crop.name + ' is ' + strength + '% above its 12-month average, worth selling straight off the field.';
     } else if (code === 'hold') {
       lead = crop.name + ' is ' + strength + '% below its 12-month average. ' +
              (crop.shelfLifeDays >= 60
-               ? 'It keeps ' + crop.shelfLifeDays + ' days in the ' + crop.store.toLowerCase() + ' — store it and wait for the price.'
+               ? 'It keeps ' + crop.shelfLifeDays + ' days in the ' + crop.store.toLowerCase() + ', store it and wait for the price.'
                : 'It will not keep, so plan the sale before it comes out of the ground.');
     } else {
       lead = crop.name + ' is trading close to its 12-month average.';

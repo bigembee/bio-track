@@ -34,7 +34,7 @@
         errHost.innerHTML = '';
         var notice = tag('div', 'notice');
         notice.appendChild(tag('strong', null, 'The weather forecast did not load'));
-        notice.appendChild(tag('span', null, ctx.weatherError + '. Prices below are unaffected — they do not depend on this request.'));
+        notice.appendChild(tag('span', null, ctx.weatherError + '. Prices below are unaffected; they do not depend on this request.'));
         var retry = tag('button', null, 'Try again');
         retry.addEventListener('click', function () { NS.app.loadWeather(); });
         notice.appendChild(retry);
@@ -89,11 +89,11 @@
 
       var tdPrice = tag('td', 'right num');
       var tdChange = tag('td', 'right');
-      var change = tag('span', 'delta flat', '—');
+      var change = tag('span', 'delta flat', 'n/a');
       tdChange.appendChild(change);
       var tdAvg = tag('td', 'right num');
       var tdYoy = tag('td', 'right');
-      var yoy = tag('span', 'delta flat', '—');
+      var yoy = tag('span', 'delta flat', 'n/a');
       tdYoy.appendChild(yoy);
 
       var tdSpark = tag('td');
@@ -140,7 +140,7 @@
       setText(r.change, fmt.pctSigned(q.changePct, 1));
       r.change.className = 'delta ' + dom.deltaClass(q.changePct);
       setText(r.avg, fmt.price(q.ma12));
-      setText(r.yoy, q.yoy != null ? fmt.pctSigned(q.yoy, 0) : '—');
+      setText(r.yoy, q.yoy != null ? fmt.pctSigned(q.yoy, 0) : 'n/a');
       r.yoy.className = 'delta ' + (q.yoy != null ? dom.deltaClass(q.yoy) : 'flat');
 
       r.signal.className = 'badge ' + q.signal.tone;
@@ -229,15 +229,15 @@
     link.appendChild(document.createTextNode(' '));
     link.appendChild(icon('i-external'));
     line('Feed', link);
-    line('Latest complete month', (s.periodLabel || '—') + (s.markets ? ' · ' + s.markets + ' markets reporting' : ''));
-    if (s.partialPeriod) line('Partial month', s.partialPeriod.label + ' · only ' + s.partialPeriod.markets + ' market' + (s.partialPeriod.markets === 1 ? '' : 's') + ' in so far — held back until ' + cfg.market.minMarkets + ' report');
-    line('Reporting from', s.states.length ? s.states.join(', ') + ' — the WFP-monitored markets currently publishing for Nigeria' : '—');
-    line('Price type', 'Retail, median across markets' + (cfg.market.farmgateFactor !== 1 ? ' × ' + cfg.market.farmgateFactor + ' farmgate factor' : ' — no farmgate adjustment applied'));
+    line('Latest complete month', (s.periodLabel || 'n/a') + (s.markets ? ' · ' + s.markets + ' markets reporting' : ''));
+    if (s.partialPeriod) line('Partial month', s.partialPeriod.label + ' · only ' + s.partialPeriod.markets + ' market' + (s.partialPeriod.markets === 1 ? '' : 's') + ' in so far, held back until ' + cfg.market.minMarkets + ' report');
+    line('Reporting from', s.states.length ? s.states.join(', ') + '; the WFP-monitored markets currently publishing for Nigeria' : 'n/a');
+    line('Price type', 'Retail, median across markets' + (cfg.market.farmgateFactor !== 1 ? ' × ' + cfg.market.farmgateFactor + ' farmgate factor' : ', no farmgate adjustment applied'));
     line('Coverage', s.liveCount + ' live series, ' + s.proxyCount + ' proxies, ' + s.modelledCount + ' modelled (no WFP series exists)');
     line('Loaded from', s.tier === 'live' ? 'HDX HAPI, fetched ' + fmt.ago(s.fetchedAt) + ' in ' + s.latencyMs + ' ms'
-                      : s.tier === 'cache' ? 'a cached fetch from ' + fmt.ago(s.fetchedAt) + (s.state === 'loading' ? ' — refreshing now' : '')
-                      : s.tier === 'snapshot' ? 'the bundled snapshot' + (s.fetchedAt ? ' (' + fmt.dayMonth(s.fetchedAt) + ')' : '') + (s.state === 'loading' ? ' — refreshing now' : s.state === 'error' ? ' — live refresh failed: ' + s.lastError : '')
-                      : 'nothing — every price is modelled');
+                      : s.tier === 'cache' ? 'a cached fetch from ' + fmt.ago(s.fetchedAt) + (s.state === 'loading' ? ', refreshing now' : '')
+                      : s.tier === 'snapshot' ? 'the bundled snapshot' + (s.fetchedAt ? ' (' + fmt.dayMonth(s.fetchedAt) + ')' : '') + (s.state === 'loading' ? ', refreshing now' : s.state === 'error' ? ', live refresh failed: ' + s.lastError : '')
+                      : 'nothing; every price is modelled');
   }
 
   /* ---------- page ---------- */
@@ -268,7 +268,7 @@
             tone: err ? 'warning' : 'good',
             icon: err ? 'i-alert' : 'i-check',
             title: err ? 'Prices could not be refreshed' : 'Prices refreshed',
-            detail: err ? s.lastError + ' — still showing the ' + s.tier + ' copy.'
+            detail: err ? s.lastError + ', still showing the ' + s.tier + ' copy.'
                         : s.periodLabel + ' · ' + s.liveCount + ' live, ' + s.proxyCount + ' proxy, ' + s.modelledCount + ' modelled',
             ms: 5000
           });

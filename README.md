@@ -1,14 +1,14 @@
-# Bio Track — Agricultural Intelligence Dashboard
+# Bio Track, Agricultural Intelligence Dashboard
 
 **Live demo: <https://bio-track-farms.vercel.app>**
 
 A decision cockpit for a commercial farm. It answers one question at a glance:
-**what is the farm worth right now — in the barn and on the hoof — and what should
+**what is the farm worth right now, in the barn and on the hoof, and what should
 I do about it today?**
 
-Three data streams feed that answer — live weather for the farm's own coordinates,
+Three data streams feed that answer, live weather for the farm's own coordinates,
 real monthly market prices from the World Food Programme, and the farm's own
-records — and the dashboard joins them rather than displaying them side by side.
+records, and the dashboard joins them rather than displaying them side by side.
 
 ---
 
@@ -22,10 +22,10 @@ python tools/devserver.py
 
 Then open <http://localhost:5173>. `tools/devserver.py` is a plain static server with
 caching switched off, so an edited file is never served stale. The landing page's **Log in** button goes
-straight to the cockpit — there is no authentication yet.
+straight to the cockpit; there is no authentication yet.
 
 Any static server works (`npx serve`, VS Code Live Server, Apache, GitHub Pages).
-Opening `index.html` directly from disk also works — the bundled price snapshot
+Opening `index.html` directly from disk also works; the bundled price snapshot
 is a script, not a fetch, so nothing depends on a same-origin request.
 
 ---
@@ -38,12 +38,12 @@ is a script, not a fetch, so nothing depends on a same-origin request.
 | **The cockpit** | `cockpit.html` | The farm's value (crops + livestock), how prices moved it, the sell priority, field and herd advisories, and the harvest calendar. |
 | **Live data** | `live.html` | Weather for the farm's coordinates; market prices for crops and livestock products, with a provenance card that says exactly where each figure came from. |
 | **Operations** | `operations.html` | Irrigation control and pest control, both driven by the forecast. |
-| **The farm** | `farm.html` | Inventory analytics, fields and the harvest calendar, and livestock — valuation, heat stress, health calendar. |
+| **The farm** | `farm.html` | Inventory analytics, fields and the harvest calendar, and livestock, valuation, heat stress, health calendar. |
 
 The sidebar, top bar, price board and footer are built once in `js/shell.js` and
 injected into every page. The alerts bell in the top bar follows the user to every
-page. Anything the user does — open a valve, record a spray, mark a vaccination
-done, pick a location — is kept in `localStorage`, so it survives a page change.
+page. Anything the user does, open a valve, record a spray, mark a vaccination
+done, pick a location, is kept in `localStorage`, so it survives a page change.
 
 ---
 
@@ -52,7 +52,7 @@ done, pick a location — is kept in `localStorage`, so it survives a page chang
 | Data | Source | Notes |
 |---|---|---|
 | Weather, soil, ET₀, hourly humidity and wind | **Open-Meteo** (live) | Forecast-model output for the selected coordinates, not on-farm sensors. Re-queried every 15 minutes; cached in `sessionStorage` between pages. |
-| Rice, yam, tomato prices | **WFP market monitor via HDX HAPI** (live, monthly) | Retail, median across the WFP-monitored markets reporting for Nigeria — at the time of writing, Borno, Yobe and Adamawa. |
+| Rice, yam, tomato prices | **WFP market monitor via HDX HAPI** (live, monthly) | Retail, median across the WFP-monitored markets reporting for Nigeria, at the time of writing, Borno, Yobe and Adamawa. |
 | Maize price | WFP **maize flour** series | A **proxy**: WFP Nigeria has published no maize-grain series since January 2023. Labelled as such on every screen. |
 | Beef, goat meat, eggs | WFP (live, monthly) | Meat per kg, eggs per 30 converted to per egg. |
 | Mutton, catfish | WFP goat meat / "Fish" series | **Proxies**, labelled. |
@@ -60,7 +60,7 @@ done, pick a location — is kept in `localStorage`, so it survives a page chang
 | Inventory, fields, plantings, herds, zones, pest programme | `js/config.js` | Seed data for a fictional farm. |
 | Irrigation runs, treatments, health tasks | Browser | Recorded in `localStorage`; nothing is controlled or sent anywhere. |
 
-Every quote carries a `mode` — `live`, `proxy` or `modelled` — and the board, the
+Every quote carries a `mode`, `live`, `proxy` or `modelled`, and the board, the
 tables and the provenance card show it. The footer of every page prints the live
 HTTP status and latency of the last weather call and which tier the prices came from.
 
@@ -79,13 +79,13 @@ That feed sets the shape of the market module, and the dashboard is honest about
 
 - **It is monthly.** There is no intraday print. The board shows the latest
   complete month and the change on the month before. The earlier version's
-  four-second ticking simulation is gone — real Nigerian farmgate prices do not
+  four-second ticking simulation is gone, real Nigerian farmgate prices do not
   tick, and flashing a fake movement over real data would have been worse than
   either alone.
 - **It is retail**, at the markets WFP monitors. `config.market.farmgateFactor`
   applies a farm's own retail-to-farmgate spread; it ships at 1, meaning no
   adjustment.
-- **The newest month is usually partial** — a handful of markets in early. A
+- **The newest month is usually partial**; a handful of markets in early. A
   month counts once `config.market.minMarkets` (4) have reported; the partial
   month is shown on the provenance card but not traded on.
 - **Not every crop has a series.** Related products stand in where WFP publishes
@@ -93,10 +93,10 @@ That feed sets the shape of the market module, and the dashboard is honest about
 
 ### Three tiers
 
-1. **Live** — fetched from HAPI when the page opens, if the copy in hand is older
+1. **Live**, fetched from HAPI when the page opens, if the copy in hand is older
    than `config.market.cacheHours` (12), or when the user presses refresh.
-2. **Cache** — the last live fetch, in `localStorage`.
-3. **Snapshot** — `data/prices-snapshot.js`, generated by `tools/fetch-prices.py`
+2. **Cache**; the last live fetch, in `localStorage`.
+3. **Snapshot**, `data/prices-snapshot.js`, generated by `tools/fetch-prices.py`
    and committed, so the board has real figures on first paint and the dashboard
    still works when HAPI is unreachable.
 
@@ -111,7 +111,7 @@ email (`config.market.source.appIdentifier`). Set your own before deploying.
 
 ### Signals
 
-Each instrument carries a signal — *Sell now / Sell soon / Watch / Hold* — from
+Each instrument carries a signal, *Sell now / Sell soon / Watch / Hold*, from
 where this month's price sits against its own 12-month average and whether it
 rose or fell last month. Every signal states the threshold it fired on.
 
@@ -128,8 +128,8 @@ decide disease pressure, spray windows and heat stress.
 Advisories name the action, the threshold and the window: hold fertiliser ahead
 of heavy rain, irrigate when the topsoil is dry and ET₀ is high, scout for leaf
 disease when humidity sits above 85% in the blight window, do not spray in wind,
-take the drying window when three dry days line up, and — from the livestock
-module — shade the cattle when the afternoon THI passes 72.
+take the drying window when three dry days line up, and, from the livestock
+module, shade the cattle when the afternoon THI passes 72.
 
 ---
 
@@ -146,7 +146,7 @@ Livestock value is part of the cockpit headline and of the portfolio history
 
 **Heat stress**, from the real hourly forecast. The temperature-humidity index,
 THI = 0.8 T + RH/100 × (T − 14.4) + 46.4, is scored over the next 48 hours with
-species-specific thresholds — a West African Dwarf goat shrugs off an afternoon
+species-specific thresholds; a West African Dwarf goat shrugs off an afternoon
 that puts a Fulani bull off its feed. Fish are scored on air temperature, which
 drives pond oxygen. Anything moderate or worse becomes a cockpit advisory with
 the relief action.
@@ -162,11 +162,11 @@ Every planting in `config.plantings` is placed against its crop's maturity windo
 (`crops[id].maturityDays`, earliest and latest days from planting). Each block is
 then joined to:
 
-- **the forecast** — is the opening day wet, and where is the first dry pair of
+- **the forecast**, is the opening day wet, and where is the first dry pair of
   days after it;
-- **the market** — is the price worth selling straight off the field, or is this
+- **the market**, is the price worth selling straight off the field, or is this
   a crop to dry and store (`shelfLifeDays` decides which advice is given);
-- **the pre-harvest interval** — a spray that clears after the window opens holds
+- **the pre-harvest interval**; a spray that clears after the window opens holds
   the harvest back whatever the calendar says.
 
 Alerts fire from `config.harvest.leadDays` (21) out and escalate: *Approaching →
@@ -175,7 +175,7 @@ ways:
 
 1. **The bell** in the top bar, on every page, with a count and a panel.
 2. **Toasts** for anything urgent, once per browser session.
-3. **Browser notifications**, once permission is granted from the bell — one per
+3. **Browser notifications**, once permission is granted from the bell, one per
    block per day, so a harvest is nagged about, not spammed.
 
 The open dashboard re-evaluates every hour (`config.harvest.checkMs`). Livestock
@@ -195,7 +195,7 @@ ETc = ET0 x Kc                    what the crop transpires per day
 deficit += ETc - (rain x 0.75)    accumulated, day by day, floored at zero
 ```
 
-ET₀ and rainfall are the real ones from Open-Meteo — the `past_days` in that
+ET₀ and rainfall are the real ones from Open-Meteo; the `past_days` in that
 request is what makes the backwards accumulation possible. Switch the location
 from Ibadan to Kano and the same zones jump from *Holding* to *Due soon*, because
 the rain simply is not there.
@@ -211,7 +211,7 @@ in `localStorage` and catches up on the time that passed.
 Insects run on growing degree days summed from the last scouting visit; diseases
 on the longest unbroken run of humid hours inside the pathogen's band; the spray
 window is the next run of calm, dry hours. Every product carries a pre-harvest
-interval, and recording a treatment starts that clock — which reaches straight
+interval, and recording a treatment starts that clock, which reaches straight
 into the sell priority (produce that cannot be sold before it spoils is
 **stranded**) and the harvest calendar (a window that opens before the interval
 clears is flagged).
@@ -262,8 +262,8 @@ and the alerts bell are right wherever the user is standing. `market.init()`
 publishes the offline tier synchronously, so the page paints with real figures
 before any request is answered; a live fetch follows if the copy in hand is stale.
 Weather is fetched independently, so an outage in one feed cannot take the other
-down. Every change runs `compute()` once — valuation, advisories, irrigation,
-pests, harvest, heat stress — and hands the result to the chrome and the page.
+down. Every change runs `compute()` once, valuation, advisories, irrigation,
+pests, harvest, heat stress, and hands the result to the chrome and the page.
 
 **Updated in place, never re-rendered.** Anything that changes on a refresh has
 its text node written directly. Re-writing `innerHTML` would drop text selection,
@@ -276,7 +276,7 @@ kill hover states and reallocate every sparkline canvas.
 | Chart | Form | Why that form |
 |---|---|---|
 | Farm value, 24 months | Area line | One series over time. The endpoint carries a direct label. |
-| Crop price trend | Multi-line, 6 series | Comparing trajectories. Legend doubles as a series filter. Modelled series are dashed — a different kind of claim. |
+| Crop price trend | Multi-line, 6 series | Comparing trajectories. Legend doubles as a series filter. Modelled series are dashed; a different kind of claim. |
 | Livestock product trend | Multi-line, 6 series | Same, second palette so nothing collides with a crop. |
 | Value composition (crops, herds) | Doughnut | Part-to-whole at a glance. |
 | Market value vs cost | Grouped horizontal bar | Two measures on one scale, per crop. |
@@ -295,14 +295,14 @@ order so the two never share a colour on the board.
 ## Accessibility & responsiveness
 
 - Sidebar becomes a drawer below 860px, single column below 980px, single-column
-  tiles below 620px. The page body never scrolls horizontally — wide tables scroll
+  tiles below 620px. The page body never scrolls horizontally, wide tables scroll
   inside their own container.
 - Skip link, visible focus rings, `aria-sort` on sortable columns, `aria-pressed`
   on toggles, `aria-expanded` on the drawer and the bell, `<caption>` on every
   data table.
 - `prefers-reduced-motion` disables the entrance sequence, the live pulse and the
   landing page's drift and scan.
-- Status colours never carry meaning alone — each pairs with an icon and a label.
+- Status colours never carry meaning alone; each pairs with an icon and a label.
 
 ---
 
@@ -317,5 +317,5 @@ order so the two never share a colour on the board.
 - **Inventory, plantings, herds and zones are seed data** in `js/config.js`.
   Ages are stored relative to today so the spoilage, harvest and maturity maths
   stay truthful whenever the dashboard is opened.
-- **Single light theme for the dashboard**, chosen deliberately — a daylight tool.
-  The landing page is dark, deliberately — it is the door, not the desk.
+- **Single light theme for the dashboard**, chosen deliberately; a daylight tool.
+  The landing page is dark, deliberately; it is the door, not the desk.

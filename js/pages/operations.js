@@ -40,9 +40,9 @@
     setText(el('irrSaved'), Math.round(s.savedM3) + ' m³');
     setText(el('irrSavedNote'), s.savedM3
       ? fmt.money(s.savedCost) + ' of pumping displaced over three days'
-      : 'No rain in range — every millimetre has to be pumped');
+      : 'No rain in range; every millimetre has to be pumped');
 
-    setText(el('irrBalanceSource'), s.estimated ? 'Estimated — forecast unavailable' : 'From Open-Meteo ET₀ and rainfall');
+    setText(el('irrBalanceSource'), s.estimated ? 'Estimated, forecast unavailable' : 'From Open-Meteo ET₀ and rainfall');
     setText(el('irrClockNote'), 'Demo clock: 1 second = ' + NS.irrigation.settings.simulationSpeed + ' seconds of run time');
 
     var due = snap.zones.filter(function (z) { return z.canIrrigate && z.advice.state === 'Irrigate now' && !z.run; });
@@ -104,7 +104,7 @@
           start.appendChild(document.createTextNode('Open valve'));
           start.disabled = z.advice.mmNeeded <= 0.5;
           start.title = z.advice.mmNeeded <= 0.5
-            ? 'Nothing to apply — the soil is at capacity'
+            ? 'Nothing to apply; the soil is at capacity'
             : 'Run for ' + Math.round(z.advice.minutes) + ' minutes to close a ' + Math.round(z.advice.mmNeeded) + ' mm deficit';
           start.addEventListener('click', function () { NS.irrigation.start(z.id, z.advice.minutes); });
           actions.appendChild(start);
@@ -144,7 +144,7 @@
       : 'Nothing above the treatment threshold');
 
     var w = assessment.sprayWindow;
-    setText(el('pestWindow'), w ? (w.open ? 'Open now' : fmt.dayMonth(w.start) + ' ' + fmt.time(w.start)) : (ctx.weather ? 'None in 72h' : '—'));
+    setText(el('pestWindow'), w ? (w.open ? 'Open now' : fmt.dayMonth(w.start) + ' ' + fmt.time(w.start)) : (ctx.weather ? 'None in 72h' : 'n/a'));
     setText(el('pestWindowNote'), w
       ? w.hours + ' usable hours · under ' + NS.pests.settings.sprayLimits.maxWindKmh + ' km/h wind, low rain risk'
       : ctx.weather ? 'Too wet or too windy for the next three days' : 'Waiting on the forecast');
@@ -206,7 +206,7 @@
       treat.disabled = !p.canSpray;
       treat.title = p.canSpray
         ? 'Applies ' + p.product + ' across ' + p.hectares + ' ha and starts a ' + p.phiDays + '-day pre-harvest interval'
-        : 'No spray window in the next 72 hours — too wet or too windy';
+        : 'No spray window in the next 72 hours, too wet or too windy';
       treat.addEventListener('click', function () {
         if (!window.confirm(
           'Record ' + p.product + ' on ' + p.fields.join(', ') + '?\n\n' +
@@ -232,10 +232,10 @@
       pressure.appendChild(track);
       var label;
       if (!p.dd && !p.infection) {
-        label = 'Waiting on the forecast — this model needs hourly weather to run.';
+        label = 'Waiting on the forecast; this model needs hourly weather to run.';
       } else if (p.type === 'insect') {
         label = p.exceeded
-          ? Math.round(p.dd.accumulated) + ' degree days — past the ' + p.dd.threshold + ' needed for a new generation'
+          ? Math.round(p.dd.accumulated) + ' degree days, past the ' + p.dd.threshold + ' needed for a new generation'
           : Math.round(p.dd.accumulated) + ' of ' + p.dd.threshold + ' degree days to the next generation';
       } else {
         label = p.exceeded

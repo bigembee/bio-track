@@ -330,7 +330,7 @@
 
     var note;
     if (series.mode === 'modelled') {
-      note = 'No live series for ' + inst.name.toLowerCase() + ' in the WFP Nigeria database — this price is modelled around a ₦' +
+      note = 'No live series for ' + inst.name.toLowerCase() + ' in the WFP Nigeria database; this price is modelled around a ₦' +
              fmt.number(inst.basePrice) + ' reference and seasonal curve.';
     } else if (series.mode === 'proxy') {
       note = inst.feed.proxy + '. Series: “' + inst.feed.commodity + '”, ' + compact.priceType.toLowerCase() +

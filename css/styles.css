@@ -1087,7 +1087,7 @@ button.legend-item:hover { color: var(--ink-primary); }
 .advisory[data-severity="info"] .advisory-icon { background: var(--canopy-100); color: var(--canopy-700); }
 
 /* =====================================================================
-   Tables — the relief for chart colours that sit below 3:1, and the
+   Tables; the relief for chart colours that sit below 3:1, and the
    place every number in a chart can be read exactly.
    ===================================================================== */
 
@@ -1118,7 +1118,7 @@ table.data td {
 }
 table.data tbody tr:last-child td { border-bottom: 0; }
 /* A lot inside a pre-harvest interval is still worth money, it just cannot
-   be sold yet — recessive, not an error state. */
+   be sold yet, recessive, not an error state. */
 table.data tbody tr.is-blocked td:first-child { box-shadow: inset 3px 0 0 var(--husk-400); }
 table.data tbody tr.is-blocked { background: var(--millet-100); }
 table.data tbody tr:hover { background: var(--surface-sunk); }
@@ -1177,7 +1177,7 @@ th.sortable[aria-sort="descending"]::after { content: ' \2193'; color: var(--can
   background: var(--husk-200);
   overflow: hidden;
 }
-/* display:block matters — as an inline span the width and height below are
+/* display:block matters, as an inline span the width and height below are
    ignored and the fill collapses to nothing. */
 .meter-fill { display: block; height: 100%; border-radius: 99px; }
 .meter-fill.ok       { background: var(--good); }
@@ -1537,7 +1537,7 @@ th.sortable[aria-sort="descending"]::after { content: ' \2193'; color: var(--can
 @keyframes shimmer { 0% { background-position: 100% 0; } 100% { background-position: 0 0; } }
 
 /* =====================================================================
-   Entrance — one orchestrated pass on load, nothing after
+   Entrance, one orchestrated pass on load, nothing after
    ===================================================================== */
 
 .reveal { opacity: 0; transform: translateY(10px); animation: rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards; }

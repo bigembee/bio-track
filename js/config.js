@@ -1,5 +1,5 @@
 /**
- * AgroSense — configuration & seed data
+ * AgroSense, configuration & seed data
  * ---------------------------------------------------------------
  * Everything a deployment needs to change lives in this one file:
  * the farm profile, the coordinates weather is pulled for, the crop
@@ -14,7 +14,7 @@ window.AgroSense = window.AgroSense || {};
   /* Categorical series colours.
      Fixed slot order from a CVD-validated palette (worst adjacent ΔE 9.1
      protan / 19.6 normal against a white chart surface). A crop keeps its
-     colour for the life of the session — colour follows the entity, never
+     colour for the life of the session, colour follows the entity, never
      its rank in a sorted table. */
   var SERIES = ['#2a78d6', '#eb6834', '#1baf7a', '#eda100', '#e87ba4', '#008300'];
 
@@ -45,23 +45,23 @@ window.AgroSense = window.AgroSense || {};
 
     /**
      * Crop catalogue.
-     *  picture     — the sprite symbol (js/icons.js) drawn beside its name.
-     *  feed        — which WFP commodity series prices this crop. `proxy`
+     *  picture; the sprite symbol (js/icons.js) drawn beside its name.
+     *  feed, which WFP commodity series prices this crop. `proxy`
      *                says when a related product stands in (maize flour
      *                for maize grain). null means no live series exists
      *                and the price is modelled the interface says so.
-     *  basePrice   — ₦/kg reference used only when a series is missing.
-     *  volatility  — monthly sigma of the modelled walk.
-     *  seasonalAmp — amplitude of the annual price cycle, as a fraction.
-     *  peakMonth   — month (0-11) the seasonal premium peaks (lean season).
-     *  shelfLife   — days the crop holds condition in the store it uses.
-     *  kc          — FAO-56 mid-season crop coefficient. Water use is
+     *  basePrice, ₦/kg reference used only when a series is missing.
+     *  volatility, monthly sigma of the modelled walk.
+     *  seasonalAmp, amplitude of the annual price cycle, as a fraction.
+     *  peakMonth, month (0-11) the seasonal premium peaks (lean season).
+     *  shelfLife, days the crop holds condition in the store it uses.
+     *  kc, FAO-56 mid-season crop coefficient. Water use is
      *                ETc = ET0 x Kc.
-     *  maturityDays — [earliest, latest] days from planting to a harvest
+     *  maturityDays, [earliest, latest] days from planting to a harvest
      *                window, for the harvest alerts.
      */
     crops: {
-      maize:   { id: 'maize',   name: 'Maize', picture: 'p-maize',        unit: 'kg', feed: { commodity: 'Maize flour', proxy: 'Maize flour stands in for grain — WFP Nigeria has published no maize grain series since 2023' },
+      maize:   { id: 'maize',   name: 'Maize', picture: 'p-maize',        unit: 'kg', feed: { commodity: 'Maize flour', proxy: 'Maize flour stands in for grain, WFP Nigeria has published no maize grain series since 2023' },
                  basePrice:  850, volatility: 0.05, seasonalAmp: 0.16, peakMonth: 6,  shelfLifeDays: 240, store: 'Dry crib',    kc: 1.20, maturityDays: [90, 120],  harvestNote: 'Harvest once grain moisture is under 25%, then dry to 13% before bagging.', color: SERIES[0] },
       rice:    { id: 'rice',    name: 'Rice (paddy)', picture: 'p-rice', unit: 'kg', feed: { commodity: 'Rice (local)' },
                  basePrice: 1450, volatility: 0.04, seasonalAmp: 0.12, peakMonth: 5,  shelfLifeDays: 180, store: 'Dry crib',    kc: 1.20, maturityDays: [110, 130], harvestNote: 'Harvest when 80–85% of panicles have turned straw-coloured.', color: SERIES[1] },
@@ -72,14 +72,14 @@ window.AgroSense = window.AgroSense || {};
       yam:     { id: 'yam',     name: 'Yam', picture: 'p-yam',          unit: 'kg', feed: { commodity: 'Yam' },
                  basePrice: 1100, volatility: 0.05, seasonalAmp: 0.20, peakMonth: 3,  shelfLifeDays: 90,  store: 'Yam barn',    kc: 1.10, maturityDays: [240, 300], harvestNote: 'Harvest when vines have senesced; cure tubers 4 days before barn storage.', color: SERIES[4] },
       soybean: { id: 'soybean', name: 'Soybean', picture: 'p-soybean',      unit: 'kg', feed: null,
-                 basePrice: 1650, volatility: 0.04, seasonalAmp: 0.10, peakMonth: 7,  shelfLifeDays: 300, store: 'Sealed silo', kc: 1.15, maturityDays: [95, 110],  harvestNote: 'Harvest at 95% pod browning — shattering losses climb fast after that.', color: SERIES[5] }
+                 basePrice: 1650, volatility: 0.04, seasonalAmp: 0.10, peakMonth: 7,  shelfLifeDays: 300, store: 'Sealed silo', kc: 1.15, maturityDays: [95, 110],  harvestNote: 'Harvest at 95% pod browning, shattering losses climb fast after that.', color: SERIES[5] }
     },
 
     /**
      * Physical stock on hand. Harvest dates are stored as an age in days
      * rather than a fixed date so the spoilage maths stays truthful no
      * matter when the dashboard is opened.
-     *   costPerKg — what the lot cost to grow and put in store. The gap
+     *   costPerKg, what the lot cost to grow and put in store. The gap
      *               between this and the live price is the real margin.
      */
     inventory: [
@@ -124,9 +124,9 @@ window.AgroSense = window.AgroSense || {};
 
     /**
      * Harvest alerts.
-     *   leadDays  — how far ahead of the window opening the first alert fires.
-     *   checkMs   — how often the open dashboard re-evaluates.
-     *   wetDayMm  — rain on a harvest day above this makes it a wet day.
+     *   leadDays, how far ahead of the window opening the first alert fires.
+     *   checkMs, how often the open dashboard re-evaluates.
+     *   wetDayMm, rain on a harvest day above this makes it a wet day.
      */
     harvest: {
       leadDays: 21,
@@ -159,7 +159,7 @@ window.AgroSense = window.AgroSense || {};
                    basePrice: 6800, volatility: 0.04, seasonalAmp: 0.08, peakMonth: 11, color: LIVESTOCK_SERIES[0] },
         goat:    { id: 'goat',    name: 'Goat meat', picture: 'p-goat',    unit: 'kg',  feed: { commodity: 'Meat (goat)' },
                    basePrice: 7400, volatility: 0.04, seasonalAmp: 0.10, peakMonth: 11, color: LIVESTOCK_SERIES[1] },
-        mutton:  { id: 'mutton',  name: 'Mutton', picture: 'p-sheep',       unit: 'kg',  feed: { commodity: 'Meat (goat)', proxy: 'Goat meat stands in for mutton — WFP publishes no sheep series for Nigeria' },
+        mutton:  { id: 'mutton',  name: 'Mutton', picture: 'p-sheep',       unit: 'kg',  feed: { commodity: 'Meat (goat)', proxy: 'Goat meat stands in for mutton, WFP publishes no sheep series for Nigeria' },
                    basePrice: 7400, volatility: 0.04, seasonalAmp: 0.10, peakMonth: 11, color: LIVESTOCK_SERIES[2] },
         eggs:    { id: 'eggs',    name: 'Eggs', picture: 'p-egg',         unit: 'egg', feed: { commodity: 'Eggs' },
                    basePrice: 220,  volatility: 0.03, seasonalAmp: 0.05, peakMonth: 11, color: LIVESTOCK_SERIES[3] },
@@ -217,7 +217,7 @@ window.AgroSense = window.AgroSense || {};
      * Insects are tracked on growing degree days: development is driven by
      * accumulated warmth above a species-specific base temperature, so
      * GDD predicts when the next generation emerges far better than a
-     * calendar does. Diseases are tracked on infection conditions instead —
+     * calendar does. Diseases are tracked on infection conditions instead,
      * a run of hours inside a humidity and temperature band.
      *
      * Every product carries a pre-harvest interval. Spray a block and its
@@ -259,17 +259,17 @@ window.AgroSense = window.AgroSense || {};
      *
      * The live source is the WFP market price database, served through the
      * HDX Humanitarian API. It is the only free, CORS-open feed of Nigerian
-     * food prices; it is monthly, retail, and — at the time of writing —
+     * food prices; it is monthly, retail, and, at the time of writing,
      * reported from WFP-monitored markets in Borno, Yobe and Adamawa. The
      * dashboard says all of that on the board rather than hiding it.
      *
-     *   months       — how much history to request and chart.
-     *   minMarkets   — a month counts as complete once this many markets
+     *   months, how much history to request and chart.
+     *   minMarkets; a month counts as complete once this many markets
      *                  have reported. The newest month is usually partial.
-     *   farmgateFactor — retail → farmgate adjustment applied to every live
+     *   farmgateFactor, retail → farmgate adjustment applied to every live
      *                  price. 1 = show the retail figure as published. Set
      *                  from the farm's own experience of the spread.
-     *   cacheHours   — how long a fetched series is reused before refetching.
+     *   cacheHours, how long a fetched series is reused before refetching.
      */
     market: {
       source: {

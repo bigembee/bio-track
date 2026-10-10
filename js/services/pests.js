@@ -153,7 +153,7 @@
       }
     });
 
-    // Past the trigger the window is simply met — twice the required hours
+    // Past the trigger the window is simply met, twice the required hours
     // is not "twice as infected", so the ratio is capped rather than left
     // to report figures like 200%.
     var ratio = pest.wetHoursTrigger ? longest / pest.wetHoursTrigger : 0;
@@ -316,7 +316,7 @@
       var driver;
       if (pest.type === 'insect' && dd) {
         driver = dd.progress >= 1
-          ? 'A new generation is emerging now — ' + Math.round(dd.accumulated) + ' degree days against a ' + pest.generationDD + ' threshold.'
+          ? 'A new generation is emerging now, ' + Math.round(dd.accumulated) + ' degree days against a ' + pest.generationDD + ' threshold.'
           : Math.round(dd.accumulated) + ' of ' + pest.generationDD + ' degree days since the last visit, gaining ' +
             dd.avgDaily.toFixed(1) + ' a day. Next generation in about ' +
             Math.max(1, Math.round(dd.daysToGeneration || 0)) + ' days.';

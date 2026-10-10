@@ -267,31 +267,31 @@ H1('How to use this guide')
 P('This is not a tutorial on JavaScript. It is a map of <b>this</b> codebase: what each file does, how the files talk to '
   'each other, why they are shaped the way they are, and the maths behind every number on screen. It assumes you can '
   'read a function and follow an <b>if</b>; everything else is explained the first time it appears.')
-P('It is organised in layers. Read Part 1 straight through — it is short and everything else hangs off it. Read Part 2 '
+P('It is organised in layers. Read Part 1 straight through; it is short and everything else hangs off it. Read Part 2 '
   'before you open any file, because the same eight patterns appear in all of them. Part 3 is the reference: one section '
-  'per file, in the order the browser loads them. Parts 4 and 5 are where understanding turns into confidence — trace the '
+  'per file, in the order the browser loads them. Parts 4 and 5 are where understanding turns into confidence, trace the '
   'walkthroughs with the browser DevTools open, and check the worked examples against the numbers on your screen.')
 P('Three kinds of box appear throughout:')
 BUL([
-    '<b>Try this</b> — something to do in the editor or the browser. Do them; that is the whole point.',
-    '<b>Why it is built this way</b> — the reasoning behind a choice you might otherwise change.',
-    '<b>Watch out</b> — a mistake that is easy to make in exactly this spot.',
+    '<b>Try this</b>, something to do in the editor or the browser. Do them; that is the whole point.',
+    '<b>Why it is built this way</b>; the reasoning behind a choice you might otherwise change.',
+    '<b>Watch out</b>; a mistake that is easy to make in exactly this spot.',
 ])
 P('Whenever the guide says “open the console”, it means the browser DevTools: right-click the page → <b>Inspect</b> → the '
   '<b>Console</b> tab. Errors appear there in red with the file and line number. The <b>Network</b> tab shows every request '
   'the page makes, and the <b>Elements</b> tab shows the live HTML and the CSS rules hitting each element.')
 
 CALLOUT('fix', 'How a find-and-replace once broke three pages', [
-    'When the brand was renamed from AgroSense to Bio Track, the replace hit the last line of three files — '
-    + c('js/pages/cockpit.js') + ', ' + c('js/pages/farm.js') + ' and ' + c('js/pages/live.js') + ' — turning '
+    'When the brand was renamed from AgroSense to Bio Track, the replace hit the last line of three files, '
+    + c('js/pages/cockpit.js') + ', ' + c('js/pages/farm.js') + ' and ' + c('js/pages/live.js') + ', turning '
     + c('})(window.AgroSense);') + ' into ' + c('})(window.Bio Track);') + '.',
     'A JavaScript identifier cannot contain a space, so that line was a <b>syntax error</b>. The browser refused to run '
-    'any of the file, the page module never registered itself, and every value on those pages sat at “—”. The console '
-    'said <i>Uncaught SyntaxError: missing ) after argument list</i> — the clue was there the whole time.',
+    'any of the file, the page module never registered itself, and every value on those pages sat at “, ”. The console '
+    'said <i>Uncaught SyntaxError: missing ) after argument list</i>; the clue was there the whole time.',
     '<b>The fix</b> was one word on the last line of each of those three files: ' + c('window.AgroSense') + ' put back. '
     'The brand name shown on screen is a <i>string</i> (' + c("'Bio Track'") + ' in shell.js) and can be anything; '
     + c('AgroSense') + ' in ' + c('window.AgroSense') + ' is a <i>variable name</i>, and every file must use the same one. '
-    'A global replace cannot tell the two apart — which is the lesson.',
+    'A global replace cannot tell the two apart, which is the lesson.',
     'You can catch this kind of thing before opening a browser: ' + c('node --check js/pages/cockpit.js') + ' parses a file '
     'and prints any syntax error. Running it over every file takes a second.',
 ])
@@ -308,9 +308,9 @@ python tools/devserver.py          # then open http://localhost:5173/
 ''')
 P('Use ' + c('tools/devserver.py') + ' rather than ' + c('python -m http.server') + '. It is the same static server with '
   'caching switched off. Plain http.server lets the browser hold on to a ' + c('.js') + ' file it has already seen, so you '
-  'edit a file, reload, and sit there debugging code that is no longer on disk — a genuinely maddening hour until you '
+  'edit a file, reload, and sit there debugging code that is no longer on disk; a genuinely maddening hour until you '
   'spot it. If a change ever seems not to apply, that is the first thing to suspect.')
-P('The landing page is ' + c('index.html') + '. “Log in” is a plain link to ' + c('cockpit.html') + ' — there is no '
+P('The landing page is ' + c('index.html') + '. “Log in” is a plain link to ' + c('cockpit.html') + '; there is no '
   'authentication, by design. The four dashboard pages share a sidebar; the bell in the top bar carries the same alerts '
   'to all of them.')
 
@@ -320,13 +320,13 @@ story.append(PageBreak())
 #  PART 1
 # =====================================================================
 
-H1('Part 1 — The big picture')
+H1('Part 1; The big picture')
 
 H2('1.1 What the software is for')
 P('Commercial farmers lose money on yesterday’s news: they sell into a dip because they did not know the price had moved, '
   'or they spray before a storm, or they harvest into a wet week. Bio Track is a <b>decision cockpit</b>: it pulls live '
-  'weather for the farm’s own coordinates and real market prices, joins them to what the farm actually holds — lots in '
-  'store, crops in the ground, animals on the hoof — and turns the join into things to do today.')
+  'weather for the farm’s own coordinates and real market prices, joins them to what the farm actually holds, lots in '
+  'store, crops in the ground, animals on the hoof, and turns the join into things to do today.')
 P('Everything on screen is one of three joins:')
 TABLE(['The join', 'The question it answers', 'Where it lives'], [
     ['Stock × price', 'What is the farm worth right now, and what did the last month do to that?', 'analytics.js, livestock.js'],
@@ -336,7 +336,7 @@ TABLE(['The join', 'The question it answers', 'Where it lives'], [
 
 H3('The look, in one paragraph')
 P('A soft neutral workspace: the app is one rounded panel floating on a grey backdrop, with an icon rail down the left and '
-  'the content scrolling on the right. No borders, no shadows — layering is done with tone alone. One saturated green marks '
+  'the content scrolling on the right. No borders, no shadows, layering is done with tone alone. One saturated green marks '
   'the single most important number on each screen, black marks the price board and the active nav chip, and the reserved '
   'status colours mark state. The restraint is the point: when almost everything is grey, the one green tile is unmissable.')
 
@@ -392,11 +392,11 @@ CALLOUT('why', 'Why script order matters', [
 ])
 
 H2('1.4 The render loop in one paragraph')
-P('When anything changes — a price arrives, the forecast loads, a valve opens, a treatment is recorded — ' + c('app.js') +
+P('When anything changes; a price arrives, the forecast loads, a valve opens, a treatment is recorded, ' + c('app.js') +
   ' runs ' + c('compute()') + '. That function asks every service for its current answer and packs the results into one '
   '<b>context object</b> (' + c('ctx') + '). Then it hands ' + c('ctx') + ' to the shell (for the sidebar counts and the price '
   'board) and to the page module (for the sections). The page module never fetches or calculates anything; it reads '
-  + c('ctx') + ' and writes text into elements. This one-way flow — <i>services → compute → ctx → draw</i> — is the spine '
+  + c('ctx') + ' and writes text into elements. This one-way flow, <i>services → compute → ctx → draw</i>, is the spine '
   'of the whole application, and once you see it, every file makes sense.')
 
 story.append(PageBreak())
@@ -405,7 +405,7 @@ story.append(PageBreak())
 #  PART 2
 # =====================================================================
 
-H1('Part 2 — Patterns you will meet in every file')
+H1('Part 2, Patterns you will meet in every file')
 P('These eight ideas cover most of the code. Learn them here once; the file-by-file section then reads quickly.')
 
 H2('2.1 The namespace and the wrapper function')
@@ -424,47 +424,47 @@ window.AgroSense = window.AgroSense || {};   // only in config.js, the first fil
 })(window.AgroSense);
 ''')
 BUL([
-    c('window.AgroSense = window.AgroSense || {};') + ' — <i>use the existing object if there is one, otherwise make an empty one</i>. '
+    c('window.AgroSense = window.AgroSense || {};') + ', <i>use the existing object if there is one, otherwise make an empty one</i>. '
     'The ' + c('||') + ' is “or”: if the left side is undefined it falls through to the right. Only the first file needs this line.',
-    c('(function (NS) { … })(window.AgroSense);') + ' — a function that is defined and immediately called, with the shared object '
+    c('(function (NS) { … })(window.AgroSense);') + '; a function that is defined and immediately called, with the shared object '
     'passed in as ' + c('NS') + '. Everything declared inside is invisible from outside, so files cannot accidentally overwrite '
     'each other’s variables. The pattern is called an <b>IIFE</b> (immediately-invoked function expression).',
-    c("'use strict';") + ' — asks the browser to be stricter: undeclared variables become errors instead of silently becoming globals.',
+    c("'use strict';") + ', asks the browser to be stricter: undeclared variables become errors instead of silently becoming globals.',
     'The last line is the one the rename broke. ' + c('window.AgroSense') + ' is a <i>property name on the window</i>; it has to be the '
     'same spelling in all 20 files.',
 ])
 CALLOUT('try', 'See the shared object', [
-    'Open the cockpit, open the console, type ' + c('AgroSense') + ' and press Enter. Expand it. Every key — ' + c('config') + ', '
-    + c('fmt') + ', ' + c('market') + ', ' + c('pages') + ' — was attached by one file. Type ' + c('AgroSense.market.getQuotes()') +
+    'Open the cockpit, open the console, type ' + c('AgroSense') + ' and press Enter. Expand it. Every key, ' + c('config') + ', '
+    + c('fmt') + ', ' + c('market') + ', ' + c('pages') + ', was attached by one file. Type ' + c('AgroSense.market.getQuotes()') +
     ' to see the live price objects. Type ' + c('AgroSense.fmt.money(48215000)') + ' and you get ' + c('₦48,215,000') + '.',
 ])
 
 H2('2.2 var, function scope, and why not let/const')
 P('The code uses ' + c('var') + ' and ' + c('function') + ' declarations everywhere, and no arrow functions, template strings '
   'or classes. This is <b>ES5</b> JavaScript, chosen so the dashboard runs unmodified in older browsers on farm laptops '
-  'and phones. If you add new code you may use ' + c('let') + ', ' + c('const') + ' and arrows — modern browsers are fine — '
+  'and phones. If you add new code you may use ' + c('let') + ', ' + c('const') + ' and arrows, modern browsers are fine, '
   'but be consistent within a file. The one thing to remember about ' + c('var') + ': it is scoped to the <i>function</i>, not '
   'the block, so a ' + c('var') + ' inside an ' + c('if') + ' is visible after the ' + c('if') + '.')
 
 H2('2.3 data-el: how JavaScript finds elements')
 P('The HTML never uses ' + c('id') + ' for things JavaScript writes into. It uses a data attribute:')
 CODE('''
-<div class="tile-value" data-el="tileMass">—</div>          <!-- HTML: a placeholder -->
+<div class="tile-value" data-el="tileMass">, </div>          <!-- HTML: a placeholder -->
 
 setText(el('tileMass'), fmt.mass(s.totalKg));                 // JS: fill it
 ''')
 P(c('el(name)') + ' in ' + c('dom.js') + ' is just ' + c('document.querySelector(\'[data-el="\' + name + \'"]\')') + '. '
   'The convention keeps the two halves in sync: search the project for ' + c('tileMass') + ' and you find exactly one HTML '
   'placeholder and one JS line that fills it. ' + c('id') + ' is reserved for things that need to be unique for other reasons '
-  '— chart canvases, section anchors that the sidebar links to (' + c('#irrigation') + '), and elements with ' + c('aria-controls') + '.')
+  ',  chart canvases, section anchors that the sidebar links to (' + c('#irrigation') + '), and elements with ' + c('aria-controls') + '.')
 CALLOUT('watch', 'A typo in a data-el name fails silently', [
     c('el("tileMas")') + ' returns ' + c('null') + ', and ' + c('setText(null, …)') + ' is written to do nothing rather than crash. '
-    'So a misspelt name shows up as a tile stuck on “—”, not as an error. When that happens, search for the name in both the '
+    'So a misspelt name shows up as a tile stuck on “, ”, not as an error. When that happens, search for the name in both the '
     'HTML and the JS and compare them character by character.',
 ])
 
 H2('2.4 Build once, update in place')
-P('The dashboard redraws often — every price refresh, every irrigation clock tick. If each redraw rebuilt the HTML from a '
+P('The dashboard redraws often; every price refresh, every irrigation clock tick. If each redraw rebuilt the HTML from a '
   'string, the page would flicker, your text selection would vanish, every chart would be thrown away and recreated, and '
   'a button you were about to click would be replaced under your finger. So the code separates <b>building</b> from '
   '<b>updating</b>:')
@@ -487,7 +487,7 @@ function updateLotRows(lots) {       // every change: write new text into the sa
 P(c('setText') + ' itself checks ' + c('node.textContent !== text') + ' before writing, so unchanged cells are not touched at '
   'all. Charts follow the same rule: ' + c('charts.instances[key]') + ' holds each chart, and the second call updates its data '
   'instead of building a new one. Sections that are small and change rarely (advisories, the priority list) do rebuild with '
-  + c('innerHTML = \'\'') + ' — that is a deliberate trade-off, not an oversight.')
+  + c('innerHTML = \'\'') + '; that is a deliberate trade-off, not an oversight.')
 
 H2('2.5 Publish and subscribe')
 P('Services do not know who is listening. Each keeps a list of functions and calls them when something happens:')
@@ -516,7 +516,7 @@ P('Every service exposes a ' + c('status') + ' object and keeps it truthful: ' +
   'and the market source card are all just status objects rendered as text.')
 
 H2('2.7 fetch, Promises and timeouts')
-P('Both APIs are called with ' + c('fetch') + ', which returns a <b>Promise</b> — an object that will have a value later. '
+P('Both APIs are called with ' + c('fetch') + ', which returns a <b>Promise</b>; an object that will have a value later. '
   'You chain ' + c('.then(…)') + ' for the success path and ' + c('.catch(…)') + ' for failure:')
 CODE('''
 fetchWithTimeout(url, 12000)
@@ -543,7 +543,7 @@ TABLE(['Key', 'Store', 'What it remembers'], [
     ['location', 'local', 'The last location picked in the top bar.'],
     ['prices', 'local', 'The last successful WFP fetch, so the board paints instantly next time.'],
     ['weather', 'session', 'The raw forecast, so moving between pages does not re-query Open-Meteo.'],
-    ['irrigation', 'local', 'Running valves, water applied today, the cost ledger — for today only.'],
+    ['irrigation', 'local', 'Running valves, water applied today, the cost ledger, for today only.'],
     ['pests', 'local', 'Treatments and scouting visits recorded in the interface.'],
     ['livestockDone', 'local', 'Health-calendar tasks ticked off.'],
     ['harvestNotified', 'local', 'Which harvest pings were sent today, so each fires once a day.'],
@@ -574,13 +574,13 @@ story.append(PageBreak())
 #  PART 3
 # =====================================================================
 
-H1('Part 3 — File by file')
+H1('Part 3, File by file')
 P('In load order. For each file: what it is for, the functions that matter, what it exposes, and what to try.')
 
 # ---------------- config.js
-H2('3.1 js/config.js — the data')
+H2('3.1 js/config.js; the data')
 EYE('exposes NS.config, NS.SERIES, NS.LIVESTOCK_SERIES')
-P('The one file a farm would edit to make the dashboard theirs. It contains no logic — only objects and arrays — and it is '
+P('The one file a farm would edit to make the dashboard theirs. It contains no logic; only objects and arrays, and it is '
   'loaded first so everything else can read it as ' + c('cfg') + '. If a number on screen is wrong and it is not a live '
   'price or the weather, it came from here.')
 TABLE(['Section', 'What it holds', 'Used by'], [
@@ -605,12 +605,12 @@ CALLOUT('why', 'Colours are assigned per crop, once', [
 ])
 CALLOUT('try', 'Change the farm', [
     'Add a seventh lot to ' + c('inventory') + ' (copy a line, change the id). Reload the cockpit. The hero value, the “Crops in '
-    'store” tile, the sell priority and the lot table on the farm page all change — you did not touch any of them. That is what '
+    'store” tile, the sell priority and the lot table on the farm page all change; you did not touch any of them. That is what '
     '“config knows nothing, everything reads config” buys you.',
 ])
 
 # ---------------- dom.js
-H2('3.2 js/dom.js — DOM helpers')
+H2('3.2 js/dom.js, DOM helpers')
 EYE('exposes NS.dom')
 TABLE(['Function', 'Does', 'Example'], [
     ['el(name)', 'Find the element whose data-el is name.', "el('tileMass')"],
@@ -618,36 +618,36 @@ TABLE(['Function', 'Does', 'Example'], [
     ['setText(node, text)', 'Write text only if it changed; ignores a null node.', "setText(el('x'), '42')"],
     ['tag(name, class, text)', 'Create an element with a class and optional text.', "tag('td', 'right num', '1.2 t')"],
     ['icon(id)', 'An <svg><use href="#id"/></svg> from the sprite.', "icon('i-harvest')"],
-    ['badge(tone, icon, text)', 'A <span class="badge tone"> with icon and label — the status pattern.', "badge('critical', 'i-alert', 'Act now')"],
+    ['badge(tone, icon, text)', 'A <span class="badge tone"> with icon and label; the status pattern.', "badge('critical', 'i-alert', 'Act now')"],
     ['flash(node, dir)', 'Add tick-up / tick-down for 900 ms so a moved value glows.', 'flash(cell, 1)'],
     ['deltaClass(v)', "'up' / 'down' / 'flat' for colouring a change.", 'deltaClass(-0.02) → "down"'],
     ['mark(id, color)', 'The product picture for a crop or livestock id, or the plain coloured square if it has none. Every page uses this one call.', "mark(r.cropId, r.color)"],
-    ['picture(id, color)', 'A round product picture whose ring is the series colour — replaces the coloured square without losing the legend-to-line link.', "picture('p-maize', '#2a78d6')"],
+    ['picture(id, color)', 'A round product picture whose ring is the series colour, replaces the coloured square without losing the legend-to-line link.', "picture('p-maize', '#2a78d6')"],
     ['peek(row, content, into)', 'Hide extra text until the row is hovered, focused or clicked; makes the row focusable.', 'peek(li, p, body)'],
     ['has(name)', 'Is there a data-el called name on this page?', "if (has('heatList')) …"],
 ], widths=[38 * mm, 78 * mm, 54 * mm], mono_first=True)
 P('Notice ' + c('flash') + ' contains ' + c('void node.offsetWidth;') + '. Reading ' + c('offsetWidth') + ' forces the browser to '
-  'apply the class removal before the class is added again — without it, two flashes in a row would merge into one. That '
+  'apply the class removal before the class is added again, without it, two flashes in a row would merge into one. That '
   'line is a well-known trick, and it is the kind of thing worth a comment, which it has.')
 
 # ---------------- store.js
-H2('3.3 js/store.js — persistence')
+H2('3.3 js/store.js, persistence')
 EYE('exposes NS.store.local, NS.store.session')
 P('Forty lines, but they protect every page. ' + c('make(storage)') + ' returns an object with ' + c('get') + ', ' + c('set') + ', '
   + c('remove') + '; each wraps the browser call in ' + c('try/catch') + ' and JSON-encodes the value so you can store objects, '
   'not just strings. ' + c('safe(name)') + ' checks whether ' + c('window.localStorage') + ' can even be touched (some private '
-  'windows throw on access). If it cannot, a ' + c('noop') + ' object stands in — every ' + c('get') + ' returns the fallback, '
+  'windows throw on access). If it cannot, a ' + c('noop') + ' object stands in; every ' + c('get') + ' returns the fallback, '
   'every ' + c('set') + ' returns false, and the dashboard carries on without memory.')
 
 # ---------------- format.js
-H2('3.4 js/format.js — formatting')
+H2('3.4 js/format.js, formatting')
 EYE('exposes NS.fmt')
 P('All number and date formatting goes through here so the whole site agrees on how a naira amount looks. It uses '
   + c('Intl.NumberFormat') + ', the browser’s built-in locale-aware formatter, configured once for ' + c('en-NG') + ' and '
   + c('NGN') + '.')
 TABLE(['Function', 'Input → output'], [
     ['money(n)', '48215000 → ₦48,215,000 (no kobo)'],
-    ['price(n)', '852.4 → ₦852.40 (kobo shown — for per-kg prices)'],
+    ['price(n)', '852.4 → ₦852.40 (kobo shown, for per-kg prices)'],
     ['moneyShort(n)', '48215000 → ₦48.2m; 12000 → ₦12k'],
     ['moneySigned(n)', '-3200 → -₦3,200; 3200 → +₦3,200'],
     ['mass(kg)', '24000 → 24 t; 640 → 640 kg'],
@@ -659,16 +659,16 @@ TABLE(['Function', 'Input → output'], [
     ['days(n)', 'shelf life: 4 → 4d left; -2 → 2d over'],
     ['ago(ts)', 'a timestamp → just now / 40s ago / 6m ago / 2h ago'],
 ], widths=[62 * mm, 108 * mm], mono_first=True)
-P('Every function returns ' + c('—') + ' for a missing or non-numeric value rather than printing ' + c('NaN') + '. That is why '
+P('Every function returns ' + c('n/a') + ' for a missing or non-numeric value rather than printing ' + c('NaN') + '. That is why '
   'a page that has not loaded yet shows dashes rather than garbage.')
 
 # ---------------- icons.js
-H2('3.5 js/icons.js — the icon sprite')
+H2('3.5 js/icons.js; the icon sprite')
 EYE('exposes NS.icons; injects the sprite into <body>')
 P('One SVG containing ~60 ' + c('<symbol>') + 's, each a 24×24 stroked drawing with an id like ' + c('i-harvest') + '. It is '
   'inserted at the top of ' + c('<body>') + ' on load; from then on ' + c('<svg class="icon"><use href="#i-harvest"/></svg>') +
   ' anywhere on the page draws that symbol. Because the strokes use ' + c('currentColor') + ', an icon takes the text colour '
-  'of wherever it sits — which is why one sprite works on the dark sidebar and the white cards.')
+  'of wherever it sits, which is why one sprite works on the dark sidebar and the white cards.')
 CALLOUT('try', 'Add an icon', [
     'Copy any ' + c('<symbol>') + ' line in the ' + c('SPRITE') + ' string, give it a new id, and change the ' + c('d="…"') +
     ' path (draw one at a 24×24 grid in any SVG tool, or borrow a path from an open icon set). Then use it with '
@@ -676,20 +676,20 @@ CALLOUT('try', 'Add an icon', [
 ])
 
 # ---------------- market.js
-H2('3.6 js/services/market.js — market prices')
+H2('3.6 js/services/market.js, market prices')
 EYE('exposes NS.market')
 P('The longest service, because real data is awkward. Prices come from the <b>World Food Programme</b> market monitor, '
-  'served through the <b>HDX Humanitarian API</b> — the one free, browser-callable feed of Nigerian food prices. Its shape '
+  'served through the <b>HDX Humanitarian API</b>; the one free, browser-callable feed of Nigerian food prices. Its shape '
   'dictates the module’s shape:')
 BUL([
     'It is <b>monthly</b>, so the board shows the latest complete month and the change on the month before. There is no live tick.',
     'It is <b>retail</b>, at WFP-monitored markets (currently Borno, Yobe and Adamawa). ' + c('config.market.farmgateFactor') + ' lets a farm apply its own spread.',
-    'The newest month is usually <b>partial</b> — a few markets in early. A month counts once ' + c('minMarkets') + ' (4) have reported.',
+    'The newest month is usually <b>partial</b>; a few markets in early. A month counts once ' + c('minMarkets') + ' (4) have reported.',
     'Not every crop has a series. Maize flour stands in for maize grain (a <b>proxy</b>); cassava and soybean have nothing and are <b>modelled</b>. The board labels each one.',
 ])
 H3('Instruments')
 P(c('instruments()') + ' merges the crops and the livestock products into one list, each tagged ' + c('kind: "crop"') + ' or '
-  + c('"livestock"') + '. From here on the module does not care which is which — an instrument is anything with a price.')
+  + c('"livestock"') + '. From here on the module does not care which is which; an instrument is anything with a price.')
 H3('Three tiers')
 CODE('''
   init()
@@ -709,8 +709,8 @@ H3('From raw rows to a quote')
 TABLE(['Function', 'What it does'], [
     ['compactSeries(rows, commodity)', 'Groups raw API rows by month, keeps one price per market, takes the median across markets, converts to the base unit (2.1 KG → per kg). Returns {points:[{m, p, n}], unit, states…} where n is how many markets reported.'],
     ['latestCompleteMonth(series)', 'The newest month where any series has n ≥ minMarkets. This becomes the end of the shared month axis.'],
-    ['monthAxis(end, 24)', 'The last 24 month keys, oldest first — every instrument is laid on this same axis so they can be summed.'],
-    ['liveHistory(inst, compact)', 'Maps the axis to closes. A month with no complete data carries the previous month forward and is marked filled:true — a flat segment rather than a hole.'],
+    ['monthAxis(end, 24)', 'The last 24 month keys, oldest first; every instrument is laid on this same axis so they can be summed.'],
+    ['liveHistory(inst, compact)', 'Maps the axis to closes. A month with no complete data carries the previous month forward and is marked filled:true; a flat segment rather than a hole.'],
     ['modelledHistory(inst)', 'For instruments with no series: a mean-reverting random walk around basePrice × seasonalFactor, seeded deterministically so it is the same every reload.'],
     ['rebuild()', 'Runs the above for every instrument, counts live/proxy/modelled, records which states reported, then calls rebuildQuote for each.'],
     ['deriveSignal(price, ma12, momentum)', 'Sell now / Sell soon / Hold / Watch, by comparing this month with the 12-month average (see Part 5).'],
@@ -718,7 +718,7 @@ TABLE(['Function', 'What it does'], [
 ], widths=[52 * mm, 118 * mm], mono_first=True)
 CALLOUT('why', 'Why fill forward instead of leaving a gap', [
     'The portfolio history multiplies every month’s price by the kilos held. A ' + c('null') + ' in one crop’s series would make '
-    'the whole farm value ' + c('null') + ' for that month — a hole in the hero chart. Carrying the last known price forward '
+    'the whole farm value ' + c('null') + ' for that month; a hole in the hero chart. Carrying the last known price forward '
     'and flagging it ' + c('filled: true') + ' keeps the sum honest and lets the interface say “no new data this month”.',
 ])
 CALLOUT('try', 'Watch the tiers', [
@@ -728,11 +728,11 @@ CALLOUT('try', 'Watch the tiers', [
 ])
 
 # ---------------- weather.js
-H2('3.7 js/services/weather.js — weather intelligence')
+H2('3.7 js/services/weather.js, weather intelligence')
 EYE('exposes NS.weather')
 P('Live data from <b>Open-Meteo</b> for the selected location. No API key, no sign-up. The request asks for far more than '
   'temperature: soil moisture and soil temperature, reference evapotranspiration (ET<sub>0</sub>), precipitation probability, '
-  'wind — because the irrigation, pest and livestock models all run off this one response. It also asks for '
+  'wind, because the irrigation, pest and livestock models all run off this one response. It also asks for '
   + c('past_days=14') + ': the irrigation deficit is accumulated <i>backwards</i> from the last watering, and degree days are '
   'summed over the weeks a pest has been developing.')
 TABLE(['Function', 'What it does'], [
@@ -751,7 +751,7 @@ CALLOUT('watch', 'Index 0 is not today', [
 ])
 
 # ---------------- irrigation.js
-H2('3.8 js/services/irrigation.js — irrigation control')
+H2('3.8 js/services/irrigation.js, irrigation control')
 EYE('exposes NS.irrigation')
 P('Two jobs. The <b>water balance</b> answers “how thirsty is each zone?” with the FAO-56 method (Part 5.6). The '
   '<b>controller</b> lets valves be opened and closed, and a running valve genuinely changes the numbers.')
@@ -766,49 +766,49 @@ TABLE(['Function', 'What it does'], [
 ], widths=[56 * mm, 114 * mm], mono_first=True)
 CALLOUT('why', 'The demo clock is stated, not hidden', [
     'A 210-minute run at real speed would never be watched. ' + c('simulationSpeed: 60') + ' makes one real second one minute of '
-    'run time, and the zones card prints exactly that. The alternative — completing a run instantly — would make the water '
+    'run time, and the zones card prints exactly that. The alternative, completing a run instantly, would make the water '
     'and cost figures meaningless. Honest acceleration beats a fake result.',
 ])
 
 # ---------------- pests.js
-H2('3.9 js/services/pests.js — pest and disease control')
+H2('3.9 js/services/pests.js, pest and disease control')
 EYE('exposes NS.pests')
 P('Three models on the same forecast, and one rule that reaches back into the money.')
 TABLE(['Function', 'What it does'], [
     ['degreeDays(pest, weather)', 'Insects. Sums max(0, (Tmax+Tmin)/2 − baseTemp) over the past days since the last scouting visit, starting from ddAtLastScout, then projects the forecast forward. Returns the running series (for the chart), progress toward generationDD, and days to the crossing.'],
-    ['infectionWindow(pest, weather)', 'Diseases. The longest unbroken run of hours inside the humidity/temperature band in the next 48 h, against wetHoursTrigger. Progress is capped at 1 — “200% of an infection window” is not a thing.'],
+    ['infectionWindow(pest, weather)', 'Diseases. The longest unbroken run of hours inside the humidity/temperature band in the next 48 h, against wetHoursTrigger. Progress is capped at 1, “200% of an infection window” is not a thing.'],
     ['sprayWindow(weather)', 'The next run of ≥ 2 hours under maxWindKmh, under maxPrecipProb, under maxTempC. No window → the treatment button is disabled.'],
     ['treatmentRows(), getFieldConstraints()', 'Treatments on record (config + session), each with days remaining on its pre-harvest interval. getFieldConstraints() returns {field: {daysRemaining, reason, detail, clearsOn}} for every block still inside a PHI.'],
     ['assess(weather)', 'Everything above for every pest, ranked by level then progress, with the spray window, the treatment list and summary counts.'],
     ['treat(pestId), scout(pestId)', 'The actions. treat() records a treatment on every field growing that crop and starts the PHI clock; scout() clears the overdue flag. Both persist and publish.'],
 ], widths=[50 * mm, 120 * mm], mono_first=True)
 CALLOUT('why', 'getFieldConstraints() is a contract', [
-    'It returns plain data — a field, a number of days, a reason. ' + c('analytics.js') + ' and ' + c('harvest.js') + ' read it '
+    'It returns plain data; a field, a number of days, a reason. ' + c('analytics.js') + ' and ' + c('harvest.js') + ' read it '
     'without knowing what a pesticide is. That is how a spray recorded on the operations page can strand a cassava lot on the '
     'farm page and rewrite the sell priority on the cockpit: the constraint travels as data through ' + c('compute()') + '.',
 ])
 
 # ---------------- harvest.js
-H2('3.10 js/services/harvest.js — harvest alerts')
+H2('3.10 js/services/harvest.js, harvest alerts')
 EYE('exposes NS.harvest')
 P('Every planting has a window: the crop’s ' + c('maturityDays') + ' [earliest, latest] counted from planting. '
-  + c('statusFor(daysToOpen, daysToClose)') + ' places a block in one of five tiers — overdue, ready, imminent (≤ 7 days), '
+  + c('statusFor(daysToOpen, daysToClose)') + ' places a block in one of five tiers, overdue, ready, imminent (≤ 7 days), '
   'approaching (≤ leadDays), growing. Then three joins decide whether “ready” means “today”:')
 BUL([
-    c('weatherWindow()') + ' — is the opening day wet (≥ 8 mm)? Where is the first pair of dry days?',
-    c('marketNote()') + ' — is the price worth selling off the field, or should this crop go into store and wait?',
-    'The PHI from ' + c('constraints') + ' — a spray that clears <i>after</i> the window opens holds the harvest back.',
+    c('weatherWindow()') + ', is the opening day wet (≥ 8 mm)? Where is the first pair of dry days?',
+    c('marketNote()') + ', is the price worth selling off the field, or should this crop go into store and wait?',
+    'The PHI from ' + c('constraints') + '; a spray that clears <i>after</i> the window opens holds the harvest back.',
 ])
 P(c('assess()') + ' returns rows, alerts (anything not growing), livestock coming to market weight, and a summary. '
   + c('notify()') + ' sends browser notifications for critical/serious alerts, once a day per block, tracked in localStorage. '
-  + c('requestPermission()') + ' is only called from a button — browsers ignore permission requests that a user did not trigger.')
+  + c('requestPermission()') + ' is only called from a button, browsers ignore permission requests that a user did not trigger.')
 
 # ---------------- livestock.js
-H2('3.11 js/services/livestock.js — livestock')
+H2('3.11 js/services/livestock.js, livestock')
 EYE('exposes NS.livestock')
 TABLE(['Function', 'What it does'], [
     ['valueHerds(quotes)', 'Head × live kg × dressing % = carcass kg, priced at the live meat price. Layers are held at book value (they are an income stream, not a carcass) and their eggs priced per day. Also feed cost per day and days to market weight.'],
-    ['holdings()', 'Carcass kg per product plus the layers’ book value — what portfolioHistory needs to value the herd at each month’s price.'],
+    ['holdings()', 'Carcass kg per product plus the layers’ book value, what portfolioHistory needs to value the herd at each month’s price.'],
     ['thi(temp, rh)', 'Temperature-humidity index: 0.8T + (RH/100)(T − 14.4) + 46.4.'],
     ['heatStress(weather)', 'For each herd, the peak THI in the next 48 h (air temperature for fish) against species-specific bands, hours above the mild threshold, and species-specific relief advice.'],
     ['deriveAdvisories(weather)', 'Moderate/severe heat stress as an advisory in the same shape weather.js uses, so the cockpit lists it alongside the field advisories.'],
@@ -816,16 +816,16 @@ TABLE(['Function', 'What it does'], [
 ], widths=[46 * mm, 124 * mm], mono_first=True)
 
 # ---------------- analytics.js
-H2('3.12 js/analytics.js — inventory analytics')
+H2('3.12 js/analytics.js, inventory analytics')
 EYE('exposes NS.analytics')
 P('Where stock meets price. Everything the dashboard claims about money is computed here from three inputs: the lots in '
   + c('config.inventory') + ', the quotes from ' + c('market') + ', and the clock.')
 TABLE(['Function', 'What it does'], [
     ['spoilage(daysRemaining)', 'A coarse flag: past window → 100% of value exposed; ≤ 2 days → 50%; ≤ 5 → 25%; ≤ 10 → 10%; else 0.'],
-    ['valueLots(quotes, constraints)', 'One enriched row per lot: market value (kg × price), cost value, margin, days in store, shelf life left, risk, value at risk — and, if the lot’s field is under a PHI, blocked / blockedFor / stranded (blocked for longer than it will keep).'],
-    ['byCrop(lots)', 'Rolls lots up to one row per crop — what the pie and bar chart show. Keeps the worst risk and soonest expiry.'],
+    ['valueLots(quotes, constraints)', 'One enriched row per lot: market value (kg × price), cost value, margin, days in store, shelf life left, risk, value at risk, and, if the lot’s field is under a PHI, blocked / blockedFor / stranded (blocked for longer than it will keep).'],
+    ['byCrop(lots)', 'Rolls lots up to one row per crop, what the pie and bar chart show. Keeps the worst risk and soonest expiry.'],
     ['summary(lots, crops)', 'Totals: value, cost, margin, kg, value at risk, blocked value, sellable value, stranded value, top crop and its share.'],
-    ['portfolioHistory(months)', 'Today’s holdings (crop kg + carcass kg + layer book value) valued at each of the last 24 months’ prices. Holdings are held constant on purpose — see the box.'],
+    ['portfolioHistory(months)', 'Today’s holdings (crop kg + carcass kg + layer book value) valued at each of the last 24 months’ prices. Holdings are held constant on purpose, see the box.'],
     ['sellPriority(crops)', 'The ranking (Part 5.4). A PHI overrides both forces; a stranded lot goes to the top with “Will spoil before it can be sold”.'],
     ['snapshot(quotes, constraints)', 'Runs all of the above plus livestock.value() and merges the totals into farmValue / farmCost / farmMargin.'],
 ], widths=[46 * mm, 124 * mm], mono_first=True)
@@ -836,9 +836,9 @@ CALLOUT('why', 'The history chart holds the barn constant', [
 ])
 
 # ---------------- charts.js
-H2('3.13 js/charts.js — the chart layer')
+H2('3.13 js/charts.js; the chart layer')
 EYE('exposes NS.charts')
-P('All Chart.js configuration in one place. Two rules shape it. First, <b>charts are created once and updated in place</b> — '
+P('All Chart.js configuration in one place. Two rules shape it. First, <b>charts are created once and updated in place</b>, '
   'each function checks ' + c('instances[key]') + ' and, if the chart exists, swaps its data and calls ' + c('update(\'none\')') +
   '. Second, <b>no chart has two y-axes</b>: where two measures have different scales (temperature and rainfall) they get two '
   'charts, because a dual axis invents a relationship the data does not contain.')
@@ -852,13 +852,13 @@ TABLE(['Chart', 'Type', 'Where'], [
     ['forecastTemp / forecastRain', 'Two charts, one axis each: high/low lines; rainfall bars', 'Live page'],
     ['waterDeficit', 'Grouped horizontal bars: deficit vs refill point per zone', 'Operations'],
     ['degreeDays', 'Measured (solid) + forecast (dashed) accumulation vs a threshold line', 'Operations'],
-    ['sparkline', 'Raw canvas, no Chart.js — twelve of these redraw on every update', 'Live page tables'],
+    ['sparkline', 'Raw canvas, no Chart.js, twelve of these redraw on every update', 'Live page tables'],
 ], widths=[38 * mm, 92 * mm, 40 * mm], mono_first=True)
 
 # ---------------- shell.js
-H2('3.14 js/shell.js — the shared chrome')
+H2('3.14 js/shell.js; the shared chrome')
 EYE('exposes NS.shell')
-P('Each dashboard page carries four empty placeholders — ' + c('<div data-shell="sidebar">') + ', ' + c('topbar') + ', '
+P('Each dashboard page carries four empty placeholders, ' + c('<div data-shell="sidebar">') + ', ' + c('topbar') + ', '
   + c('board') + ', ' + c('footer') + '. ' + c('shell.build()') + ' replaces each with real markup, so the sidebar is written once '
   'in JavaScript rather than four times in HTML. The ' + c('NAV') + ' array at the top is the sidebar’s content: four entries, '
   'one per page, each with an ' + c('href') + ', an icon and (optionally) the name of a count pill. ' + c('data-page') + ' on ' + c('<body>') +
@@ -867,7 +867,7 @@ TABLE(['Function', 'What it does'], [
     ['buildSidebar / buildTopbar / buildBoard / buildFooter', 'Create the chrome. The top bar includes the location select, the live pill, the alerts bell (and its hidden panel), refresh, and the avatar.'],
     ['bindDrawer()', 'The hamburger, which does two jobs: on a narrow screen (≤ 860 px) it opens the sidebar as a drawer over the page; on a wide one it collapses the sidebar column and remembers the choice in localStorage (sidebarCollapsed). Escape closes the drawer; a nav tap closes it too.'],
     ['buildBoardCells / updateBoard', 'The price rail: one cell per instrument, grouped crops / livestock, with a WFP / proxy / modelled tag and a flash on change.'],
-    ['setCount(name, value, alert)', 'The count pills. Hidden at zero — a “0” is not news. app.js sets one per page: cockpit (urgent advisories + harvest), operations (zones due or running + pests), farm (harvest alerts + heat + health).'],
+    ['setCount(name, value, alert)', 'The count pills. Hidden at zero; a “0” is not news. app.js sets one per page: cockpit (urgent advisories + harvest), operations (zones due or running + pests), farm (harvest alerts + heat + health).'],
     ['renderAlerts(assessment)', 'The bell panel: harvest and livestock alerts, plus the notification-permission button.'],
     ['buildFooter()', 'The page foot. Only the words “Data sources” show; the three provenance lines are always in the DOM (app.js keeps them current) and lift up in a dark card on hover or focus.'],
     ['toast(opts)', 'A bottom-right toast that removes itself after 9 s.'],
@@ -875,7 +875,7 @@ TABLE(['Function', 'What it does'], [
 ], widths=[56 * mm, 114 * mm], mono_first=True)
 
 # ---------------- app.js
-H2('3.15 js/app.js — the orchestrator')
+H2('3.15 js/app.js; the orchestrator')
 EYE('exposes NS.app')
 P('The file that knows <i>when</i>. It has no drawing code of its own.')
 TABLE(['Function', 'What it does'], [
@@ -886,66 +886,66 @@ TABLE(['Function', 'What it does'], [
     ['loadWeather()', 'weather.load → renderAll → pingHarvest, whether or not it succeeded (the error is kept in state).'],
     ['pingHarvest()', 'Browser notifications via harvest.notify, and in-app toasts once per session for urgent items.'],
     ['bindChrome()', 'The location select (saved to localStorage) and the refresh button (weather + prices).'],
-    ['boot()', 'The startup sequence — see Part 4.1.'],
+    ['boot()', 'The startup sequence, see Part 4.1.'],
 ], widths=[38 * mm, 132 * mm], mono_first=True)
 
 # ---------------- pages
 CALLOUT('why', 'Two ways of tucking text away, for two kinds of text', [
-    '<b>Explanation</b> — what a section is for, how to read a chart — sits behind the “i” (' + c('attachInfo') + '). It is the same '
+    '<b>Explanation</b>, what a section is for, how to read a chart, sits behind the “i” (' + c('attachInfo') + '). It is the same '
     'for every visitor and every refresh, so it is lifted out of the HTML once, at load.',
-    '<b>Reasoning about one row</b> — why cassava is ranked second, how far a block is through its window — opens when that row is '
+    '<b>Reasoning about one row</b>, why cassava is ranked second, how far a block is through its window, opens when that row is '
     'hovered (' + c('dom.peek') + '). It is generated per row from live data, so it is built where the row is built.',
-    'The reveal animates ' + c('grid-template-rows') + ' from ' + c('0fr') + ' to ' + c('1fr') + ' — the one CSS trick that animates to '
+    'The reveal animates ' + c('grid-template-rows') + ' from ' + c('0fr') + ' to ' + c('1fr') + '; the one CSS trick that animates to '
     'an height you do not know in advance. Both patterns keep the text in the DOM, so screen readers still reach it.',
 ])
 
-H2('3.16 js/pages/*.js — the page modules')
+H2('3.16 js/pages/*.js; the page modules')
 P('Each registers ' + c('NS.pages.<name>') + ' with up to three functions. ' + c('init()') + ' runs once before any data: it '
   'builds static rows and binds buttons. ' + c('render(ctx)') + ' runs on every change and only reads ' + c('ctx') + '. '
   + c('renderOperations(ctx)') + ' (operations page only) is the cheap per-second path.')
 TABLE(['Module', 'init()', 'render(ctx) fills'], [
-    ['cockpit.js', 'Starts the clock in the conditions card.', 'The whole cockpit grid — conditions and the seven days ahead, six tiles, the market feed, what the farm is worth, today\u2019s jobs — then the sell priority, advisories and harvest calendar below it.'],
+    ['cockpit.js', 'Starts the clock in the conditions card.', 'The whole cockpit grid, conditions and the seven days ahead, six tiles, the market feed, what the farm is worth, today\u2019s jobs, then the sell priority, advisories and harvest calendar below it.'],
     ['live.js', 'Builds the crop and livestock table rows and legends; binds the 12/24-month range buttons.', 'The seven-day temperature and rainfall charts, both market tables and trend charts, the provenance card.'],
     ['operations.js', 'Binds “Open all due zones” / “Close all”; the pest select.', 'Irrigation tiles, deficit chart, zone cards with valve buttons and progress bars; pest tiles, degree-day chart, treatments, watchlist with Record treatment / Log scouting.'],
     ['farm.js', 'Binds the sortable column headers.', 'Lot table (built once, updated in place) + footer, mix and value-vs-cost charts, field tiles, harvest calendar with window timelines, herd table, heat stress, health calendar.'],
 ], widths=[28 * mm, 60 * mm, 82 * mm], mono_first=True)
 CALLOUT('try', 'Follow one number from data to screen', [
     'Pick the “Livestock on the hoof” tile. In ' + c('cockpit.html') + ' find ' + c('data-el="tileStock"') + '. In '
-    + c('pages/cockpit.js') + ' find ' + c("setText(el('tileStock'), …)") + ' — it reads ' + c('ctx.snapshot.livestock.summary.totalValue') +
+    + c('pages/cockpit.js') + ' find ' + c("setText(el('tileStock'), …)") + '; it reads ' + c('ctx.snapshot.livestock.summary.totalValue') +
     '. In ' + c('app.js') + ', ' + c('compute()') + ' got ' + c('snapshot') + ' from ' + c('analytics.snapshot()') + ', which called '
     + c('NS.livestock.value(quotes)') + '. In ' + c('livestock.js') + ', ' + c('valueHerds') + ' multiplied head × kg × dressing × price. '
     'The price came from ' + c('market.js') + ', the head count from ' + c('config.js') + '. Five files, one direction.',
 ])
 
 # ---------------- landing
-H2('3.17 js/landing.js and index.html — the landing page')
+H2('3.17 js/landing.js and index.html; the landing page')
 P('Deliberately standalone: it loads only ' + c('config.js') + ', the price snapshot and itself, so it is fast and cannot break '
   'if a dashboard file does. It makes one small Open-Meteo request for the default location, reads one clean series '
   '(rice) from the bundled snapshot, and finds the soonest harvest from ' + c('config.plantings') + '. If the weather request '
   'fails the chips say so rather than showing stale numbers. “Log in” is a link.')
 
 # ---------------- css
-H2('3.18 css/styles.css — the dashboard stylesheet')
+H2('3.18 css/styles.css; the dashboard stylesheet')
 P('About 1,600 lines, organised top to bottom in the order things appear on screen. The section banners (' + c('/* === Shell === */') +
-  ') are the map — search for them.')
+  ') are the map, search for them.')
 H3('Tokens first')
 P('Lines 22–120 define every colour, radius and font as a <b>CSS custom property</b> on ' + c(':root') + ': '
   + c('--canopy-600: #28a95e;') + '. Everywhere else says ' + c('var(--canopy-600)') + '. Change the token and every use changes; '
-  'this is also how ' + c('charts.js') + ' gets its colours — it reads them at boot with ' + c('getComputedStyle') + '. That is why '
+  'this is also how ' + c('charts.js') + ' gets its colours; it reads them at boot with ' + c('getComputedStyle') + '. That is why '
   'the whole interface could be re-skinned without touching a single chart file.')
 
-H3('The tonal ladder — the one idea the look is built on')
+H3('The tonal ladder; the one idea the look is built on')
 P('There are no borders and no shadows anywhere. Depth is carried by <b>tone</b>, and the ladder runs the opposite way to most '
   'interfaces: surfaces get <i>lighter</i> as you go deeper.')
 CODE('''
   --backdrop      #d8d9db    the desk the app panel sits on
   --shell         #e3e3e3    the app panel itself
   --surface       #f2f2f2    a card on the panel
-  --surface-sunk  #f9f9f9    a row INSIDE a card — lighter, not darker
+  --surface-sunk  #f9f9f9    a row INSIDE a card, lighter, not darker
   --surface-lift  #ffffff    the brightest step: inputs, hover, chips
 ''')
 P('So a card reads as a card because it is a step lighter than the panel, and a row reads as nested because it is a step '
-  'lighter again. Add a border and the effect collapses — which is why ' + c('--hairline') + ' is almost invisible and every '
+  'lighter again. Add a border and the effect collapses, which is why ' + c('--hairline') + ' is almost invisible and every '
   'card sets ' + c('border: 0') + ' explicitly.')
 P('On top of that sit exactly three accents: one saturated green (' + c('--canopy-600: #28a95e') + ') for the single headline '
   'tile, the weather card and every chart line; near-black (' + c('--soil-900: #121212') + ') for the price board, the active '
@@ -953,18 +953,18 @@ P('On top of that sit exactly three accents: one saturated green (' + c('--canop
   'but state. Everything else on the screen is grey.')
 H3('The shell, for reference')
 TABLE(['Lines', 'What'], [
-    ['172–180', '.shell — the rounded panel: a flex row, full height, overflow hidden'],
-    ['182–193', '.sidebar — the 84px icon rail and its width transition'],
-    ['195–231', '.brand, .brand-mark, .brand-text — the green disc; the wordmark is drawer-only'],
-    ['242–262', '.nav-link — the 52×52 chip, hover, and .is-active (black)'],
-    ['264–281', '.nav-count — the badge on the chip corner, with a shell-coloured ring'],
+    ['172–180', '.shell; the rounded panel: a flex row, full height, overflow hidden'],
+    ['182–193', '.sidebar; the 84px icon rail and its width transition'],
+    ['195–231', '.brand, .brand-mark, .brand-text; the green disc; the wordmark is drawer-only'],
+    ['242–262', '.nav-link; the 52×52 chip, hover, and .is-active (black)'],
+    ['264–281', '.nav-count; the badge on the chip corner, with a shell-coloured ring'],
     ['282–309', '.sidebar-foot and .nav-logout'],
     ['311–323', '.main and the desktop collapse (body.sidebar-collapsed sets the rail to width 0)'],
-    ['325–345', '.topbar — a fixed header row, no longer sticky'],
-    ['433–470', '.board — the black price rail'],
-    ['518–535', '.content — the ONLY scrolling element on the page'],
-    ['548–560', '.card — a lighter step, radius 20, no border, no shadow'],
-    ['650–686', '.tile and .tile-accent — the stat tiles and the one green headline tile'],
+    ['325–345', '.topbar; a fixed header row, no longer sticky'],
+    ['433–470', '.board; the black price rail'],
+    ['518–535', '.content; the ONLY scrolling element on the page'],
+    ['548–560', '.card; a lighter step, radius 20, no border, no shadow'],
+    ['650–686', '.tile and .tile-accent; the stat tiles and the one green headline tile'],
     ['1586– (@media 860px)', 'Where the rail becomes a labelled drawer'],
 ])
 
@@ -990,7 +990,7 @@ CODE('''
 .nav-link .nav-count.is-alert { background: var(--critical); }          /* three classes */
 ''')
 P('Both rules match an alert pill. The second wins because it is <i>more specific</i> (three class names beat two), not '
-  'because it comes later — although later does break ties. When a style “does not apply”, this is the first thing to check; '
+  'because it comes later, although later does break ties. When a style “does not apply”, this is the first thing to check; '
   'DevTools strikes through the losing property.')
 H3('Responsive')
 P('Four breakpoints near the bottom: ' + c('1180px') + ' (tiles 4→2), ' + c('980px') + ' (two-column grids → one), '
@@ -1002,16 +1002,16 @@ CALLOUT('fix', 'overflow: hidden does not clip position: absolute', [
     'itself <b>positioned</b>. The visually-hidden text spans (' + c('.sr-only') + ', which the info buttons add all the way down the page) '
     'were absolute with no positioned ancestor, so they escaped the panel and stretched the document to 2,056 px against an 808 px window.',
     '<b>The fix</b> was two lines: ' + c('position: relative') + ' on ' + c('.shell') + ' and ' + c('.content') + '. Test for it with '
-    + c('document.documentElement.scrollHeight') + ' — in an app-shell layout it must equal ' + c('innerHeight') + ', and any bigger number '
+    + c('document.documentElement.scrollHeight') + ', in an app-shell layout it must equal ' + c('innerHeight') + ', and any bigger number '
     'means something has escaped.',
 ])
 
-CALLOUT('watch', 'The ladder is only four steps wide — do not invent a fifth', [
+CALLOUT('watch', 'The ladder is only four steps wide, do not invent a fifth', [
     'Every surface in the interface is one of ' + c('--shell') + ', ' + c('--surface') + ', ' + c('--surface-sunk') + ' or '
     + c('--surface-lift') + ', and they sit within about twenty levels of each other. Drop in a hand-picked grey like '
     + c('#eaeaea') + ' and it will read as a mistake rather than a layer, because it lands between two steps.',
     'The same restraint applies to the accent. One green tile per screen is the rule; two and neither reads as the headline. '
-    'The green tile on the cockpit is marked with the class ' + c('tile-accent') + ' in ' + c('cockpit.html') + ' — move the '
+    'The green tile on the cockpit is marked with the class ' + c('tile-accent') + ' in ' + c('cockpit.html') + ', move the '
     'class to change which number leads.',
 ])
 
@@ -1052,10 +1052,10 @@ P('The snapshot is the offline tier for prices. The Python script calls the same
 CODE('''
 python tools/fetch-prices.py       # writes data/prices-snapshot.js; no packages needed
 ''')
-P('The generated file must not be edited by hand — it says so at the top. The browser will overwrite its own cached copy '
+P('The generated file must not be edited by hand; it says so at the top. The browser will overwrite its own cached copy '
   'anyway on the next successful fetch.')
 
-H2('3.22 js/services/tasks.js — today\u2019s jobs')
+H2('3.22 js/services/tasks.js, today\u2019s jobs')
 EYE('exposes NS.tasks')
 P('The task list on the cockpit is not a separate to-do app. It is the rest of the dashboard collapsed into one ranked list '
   'of things a person could go and do this morning, and every row carries the reason the service that produced it gave:')
@@ -1063,13 +1063,13 @@ TABLE(['Row', 'Comes from', 'Fires when'], [
     ['Harvest a block', 'harvest.js', 'the block is inside or past its window and the level is critical or serious'],
     ['Irrigate a zone', 'irrigation.js', 'the deficit has passed the refill point and the zone has a valve'],
     ['Treat a pest', 'pests.js', 'the threshold is crossed AND a spray window is open'],
-    ['Scout a block', 'pests.js', 'not walked in over ten days — unless that pest is already queued for treatment, since spraying means visiting'],
+    ['Scout a block', 'pests.js', 'not walked in over ten days, unless that pest is already queued for treatment, since spraying means visiting'],
     ['Vaccinate a herd', 'livestock.js', 'the health calendar has it due inside three days'],
     ['Move the stock', 'analytics.js', 'the top of the sell priority scores 0.55 or more'],
 ], widths=[36 * mm, 30 * mm, 104 * mm], mono_first=False)
 P('Ticking a row stores the completion for the rest of the day under ' + c('agrosense.tasksDone') + ', keyed by date so '
   'yesterday\u2019s ticks do not carry over. The one exception is a livestock health row, which calls '
-  + c('livestock.markDone()') + ' instead — the farm page owns those, and the two views have to agree.')
+  + c('livestock.markDone()') + ' instead; the farm page owns those, and the two views have to agree.')
 CALLOUT('why', 'Why the list is derived rather than stored', [
     'Nothing is ever added to this list by hand. If a task is on it, some model put it there and can be argued with; if the '
     'weather changes and a spray window closes, the "treat" row disappears on the next render. A to-do list you maintain '
@@ -1082,7 +1082,7 @@ story.append(PageBreak())
 #  PART 4
 # =====================================================================
 
-H1('Part 4 — Walkthroughs')
+H1('Part 4, Walkthroughs')
 P('Trace these with the console open. Each step names the function; put a ' + c('console.log') + ' in it if you want to '
   'see it fire.')
 
@@ -1092,15 +1092,15 @@ steps = [
     'Scripts load in order. ' + c('config.js') + ' creates ' + c('window.AgroSense') + '. Each following file attaches its part. ' + c('icons.js') + ' injects the sprite. ' + c('pests.js') + ' and ' + c('irrigation.js') + ' restore their localStorage state as they load.',
     c('app.js') + ' runs ' + c('boot()') + ' when the DOM is ready.',
     c('boot') + ' reads the saved location (or the default), then ' + c('charts.init()') + ' reads the CSS tokens.',
-    c('shell.build()') + ' replaces the placeholders with the sidebar, top bar, board and footer; binds the drawer and the bell; builds the board cells (still showing “—”).',
+    c('shell.build()') + ' replaces the placeholders with the sidebar, top bar, board and footer; binds the drawer and the bell; builds the board cells (still showing “, ”).',
     c('bindChrome()') + ' fills the location select and wires the refresh button.',
     'The page module’s ' + c('init()') + ' runs (the cockpit has none; the farm page builds its table rows here).',
-    c('app') + ' subscribes to ' + c('market') + ', then calls ' + c('market.init()') + '. That loads the cache or snapshot and publishes <b>synchronously</b> — so the subscriber fires immediately and ' + c('renderAll()') + ' paints real prices before any network request exists.',
+    c('app') + ' subscribes to ' + c('market') + ', then calls ' + c('market.init()') + '. That loads the cache or snapshot and publishes <b>synchronously</b>, so the subscriber fires immediately and ' + c('renderAll()') + ' paints real prices before any network request exists.',
     'Inside ' + c('renderAll') + ': ' + c('compute()') + ' builds ' + c('ctx') + ' (with ' + c('weather: null') + ' for now), ' + c('chrome(ctx)') + ' fills the board and counts, ' + c('pages.cockpit.render(ctx)') + ' fills the hero and tiles. Weather-dependent sections say “Waiting on the forecast…”.',
     'If the price cache is stale, ' + c('market.refresh()') + ' starts in the background.',
     c('app') + ' subscribes to ' + c('irrigation') + ' and starts its one-second clock; subscribes to ' + c('pests') + '.',
     c('weather.restore()') + ' is tried. On the first page of a session it returns null, so ' + c('loadWeather()') + ' runs: the pill goes to “Loading”, ' + c('weather.load()') + ' fetches Open-Meteo.',
-    'The forecast arrives (~400 ms). ' + c('normalise') + ' shapes it, it is cached in sessionStorage, ' + c('renderAll()') + ' runs again — now advisories, irrigation, pests, harvest and heat stress all have data — and ' + c('pingHarvest()') + ' shows toasts for anything urgent.',
+    'The forecast arrives (~400 ms). ' + c('normalise') + ' shapes it, it is cached in sessionStorage, ' + c('renderAll()') + ' runs again, now advisories, irrigation, pests, harvest and heat stress all have data, and ' + c('pingHarvest()') + ' shows toasts for anything urgent.',
     'Some time later the WFP fetch returns; ' + c('market') + ' publishes ' + c('update') + '; ' + c('renderAll()') + ' runs a third time and the board cells flash where a price moved.',
     'From here: the irrigation clock ticks every second (only doing work if a valve is open); weather re-checks every minute and re-fetches after 15 minutes; the harvest check re-runs hourly; the tab going hidden pauses the clock.',
 ]
@@ -1115,7 +1115,7 @@ steps = [
     c('app.js') + '’s pest subscription calls ' + c('renderAll()') + '.',
     c('compute()') + ' calls ' + c('NS.pests.getFieldConstraints()') + ', which now includes ' + c('{ "Field C": { daysRemaining: 3, … } }') + '.',
     c('analytics.snapshot(quotes, constraints)') + ' runs ' + c('valueLots') + '. Both cassava lots are from Field C, so both get ' + c('blocked: true') + '. LOT-2427 has 1 day of shelf life left and is blocked for 3, so ' + c('stranded: true') + ' and its whole value becomes ' + c('strandedValue') + '.',
-    c('byCrop') + ' rolls that up; ' + c('sellPriority') + ' sees ' + c('row.strandedValue > 0') + ' and returns the “Will spoil before it can be sold” item with score 1.2 — above everything else.',
+    c('byCrop') + ' rolls that up; ' + c('sellPriority') + ' sees ' + c('row.strandedValue > 0') + ' and returns the “Will spoil before it can be sold” item with score 1.2, above everything else.',
     c('harvest.assess') + ' also receives the constraints: the cassava planting in Field C gains a ' + c('phi') + ' note if the interval clears after its window opens.',
     'Every page then redraws from the new ' + c('ctx') + ': the cockpit’s sell priority puts cassava first with a “Sale blocked” badge; the farm page’s lot table shades the two rows; the operations page lists the new treatment with “3d to clear”; the sidebar counts update.',
     'Reload the page: ' + c('pests.js') + ' restores the treatment from localStorage on load, so the block survives. To undo it, clear the key: ' + c("localStorage.removeItem('agrosense.pests')") + '.',
@@ -1138,7 +1138,7 @@ SP(6)
 H2('4.4 Opening a valve')
 steps = [
     '“Open valve” calls ' + c('NS.irrigation.start(zoneId, minutes)') + ' with the minutes ' + c('recommend()') + ' computed to close the deficit. A run object is created and persisted; ' + c('publish(\'started\')') + ' fires.',
-    c('app.js') + '’s irrigation subscription calls ' + c('renderOperations()') + ' — the light path — which redraws the zone cards and the two sidebar counts only.',
+    c('app.js') + '’s irrigation subscription calls ' + c('renderOperations()') + '; the light path, which redraws the zone cards and the two sidebar counts only.',
     'Every second ' + c('loop()') + ' → ' + c('advance(1)') + ': the run gains 60 minutes of run time, mm applied = rate × 1 h, the ledger grows, ' + c('persist()') + ', ' + c('publish(\'progress\')') + ' → the progress bar moves.',
     'When ' + c('elapsedMinutes') + ' reaches the plan, the run is deleted and ' + c('publish(\'completed\')') + ' fires. Next ' + c('computeZones') + ' subtracts the applied mm from the deficit, so the zone reads “Holding”.',
     'Navigate to another page mid-run: ' + c('restore()') + ' on the next page reads the saved run, sees how many real seconds passed, and calls ' + c('advance(gap)') + ' to catch up.',
@@ -1152,7 +1152,7 @@ story.append(PageBreak())
 #  PART 5
 # =====================================================================
 
-H1('Part 5 — The maths, with worked examples')
+H1('Part 5; The maths, with worked examples')
 P('Every number on screen comes from one of these. The examples use the figures in ' + c('config.js') + ' and a plausible '
   'price, so you can check them against the dashboard.')
 
@@ -1171,7 +1171,7 @@ daysRemaining = shelfLifeDays − harvestedDaysAgo
 LOT-2427 cassava: 7 − 6 = 1 day left   → spoilage factor 0.50 (≤ 2 days: "Move immediately")
 valueAtRisk   = marketValue × factor   → 22,400 kg × ₦562.71 × 0.50 = ₦6,302,352
 ''')
-P('The tile “Value at spoilage risk” sums ' + c('valueAtRisk') + ' over every lot. It is deliberately coarse — a farmer wants '
+P('The tile “Value at spoilage risk” sums ' + c('valueAtRisk') + ' over every lot. It is deliberately coarse; a farmer wants '
   'a flag, not a decimal.')
 
 H2('5.3 The price signal')
@@ -1204,7 +1204,7 @@ for each of the last 24 months m:
            + layers' book value                              constant
 ''')
 P('Holdings are today’s, held constant; only prices move. So the curve is “what would my current barn and herd have '
-  'fetched each month?” — the price effect alone.')
+  'fetched each month?”; the price effect alone.')
 
 H2('5.6 Irrigation: the FAO-56 water balance')
 CODE('''
@@ -1230,7 +1230,7 @@ a 30/23 °C day: (30 + 23)/2 − 14 = 12.5 DD
 15 such days: 210 + 15 × 12.5 = 397.5 DD  → 88% → "Treat this week"
 days to crossing = (450 − 397.5) / 12.5 ≈ 4
 ''')
-P('Development runs on warmth, not the calendar — which is why the model needs the past days and why a warm week '
+P('Development runs on warmth, not the calendar, which is why the model needs the past days and why a warm week '
   'brings the next generation forward.')
 
 H2('5.8 Diseases: infection windows')
@@ -1262,24 +1262,24 @@ goat bands:   mild 74, moderate 80, severe 86  → moderate (a Dwarf goat minds 
 story.append(PageBreak())
 
 # =====================================================================
-#  PART 6 — glossary
+#  PART 6, glossary
 # =====================================================================
 
-H1('Part 6 — Glossary')
+H1('Part 6, Glossary')
 H2('JavaScript and browser terms as used here')
 TABLE(['Term', 'Meaning'], [
-    ['IIFE', 'Immediately-invoked function expression: (function(){ … })(); — a private scope that runs once.'],
+    ['IIFE', 'Immediately-invoked function expression: (function(){ … })();; a private scope that runs once.'],
     ['Namespace', 'The one shared object, window.AgroSense, that every file attaches to.'],
     ['DOM', 'The browser’s live tree of elements. JavaScript changes the page by changing the DOM.'],
     ['data-* attribute', 'A custom HTML attribute (data-el, data-shell, data-page). Read in JS via dataset or querySelector.'],
     ['Promise / .then / .catch', 'A value that arrives later; chain what to do on success and failure.'],
     ['fetch', 'The browser’s HTTP request function; returns a Promise of a Response.'],
-    ['AbortController', 'Lets a fetch be cancelled — used for the 12 s / 45 s timeouts.'],
+    ['AbortController', 'Lets a fetch be cancelled, used for the 12 s / 45 s timeouts.'],
     ['localStorage / sessionStorage', 'Per-site key–value storage; local survives restarts, session lasts one tab.'],
-    ['Notification', 'The browser notification API — harvest pings, only after the user grants permission.'],
+    ['Notification', 'The browser notification API, harvest pings, only after the user grants permission.'],
     ['CSS custom property', 'A variable in CSS: --canopy-800, read with var(--canopy-800).'],
     ['Specificity', 'Which CSS rule wins when several match: more ids > more classes > more elements; ties go to the later rule.'],
-    ['Media query', '@media (max-width: 860px) { … } — rules that apply only at some screen sizes.'],
+    ['Media query', '@media (max-width: 860px) { … }, rules that apply only at some screen sizes.'],
     ['Canvas', 'A bitmap element you draw on with JavaScript; Chart.js and the sparklines use it.'],
     ['pub/sub', 'Publish–subscribe: a service calls every registered listener when something happens.'],
 ], widths=[40 * mm, 130 * mm], mono_first=True)
@@ -1287,12 +1287,12 @@ H2('Farming terms')
 TABLE(['Term', 'Meaning'], [
     ['Farmgate price', 'What the farmer receives at the farm, before transport and market margins. WFP publishes retail; farmgateFactor adjusts.'],
     ['Lot', 'A batch of harvested produce in store, tracked as one unit.'],
-    ['Shelf life', 'How long a crop holds condition in its store — 7 days for fresh cassava, 300 for soybean in a silo.'],
+    ['Shelf life', 'How long a crop holds condition in its store, 7 days for fresh cassava, 300 for soybean in a silo.'],
     ['Pre-harvest interval (PHI)', 'Days after applying a pesticide before the crop may legally be harvested/sold.'],
     ['ET0 / ETc', 'Reference evapotranspiration (what a standard grass surface loses to the air) and crop evapotranspiration (ET0 × the crop coefficient Kc).'],
-    ['TAW / RAW', 'Total and readily available water in the root zone — FAO-56 terms.'],
+    ['TAW / RAW', 'Total and readily available water in the root zone, FAO-56 terms.'],
     ['Growing degree days', 'Accumulated warmth above a base temperature; insects develop on it.'],
-    ['Dressing percentage', 'Carcass weight as a share of live weight — 52% for cattle, 72% for broilers.'],
+    ['Dressing percentage', 'Carcass weight as a share of live weight, 52% for cattle, 72% for broilers.'],
     ['THI', 'Temperature–humidity index, the standard measure of heat stress in livestock.'],
     ['Scouting', 'Walking a field to look for pests and disease; the models count days since the last visit.'],
 ], widths=[40 * mm, 130 * mm])
@@ -1300,10 +1300,10 @@ TABLE(['Term', 'Meaning'], [
 story.append(PageBreak())
 
 # =====================================================================
-#  PART 7 — study plan
+#  PART 7, study plan
 # =====================================================================
 
-H1('Part 7 — A study plan for two')
+H1('Part 7; A study plan for two')
 P('Five sessions of about two hours. Alternate who drives; the other reads this guide aloud and asks “why?”.')
 TABLE(['Session', 'Read', 'Do'], [
     ['1 · The map', 'Parts 1 and 2. Fix the rename bug first.', 'Run the site. In the console, explore AgroSense. Find one data-el in HTML and its setText in JS. Change a config number and watch it propagate.'],
@@ -1317,7 +1317,7 @@ H2('Exercises, easiest first')
 BUL([
     '<b>Rename a nav item.</b> In ' + c('shell.js') + ', change “The cockpit” to “Overview” in the NAV array. One string.',
     '<b>Add a location.</b> Add your town to ' + c('config.locations') + ' with its coordinates. It appears in the select.',
-    '<b>Add a crop.</b> A seventh crop needs a colour (extend ' + c('SERIES') + ' — but note the pie’s six-segment guidance), a config entry, at least one lot, a field, a planting and a pest. Watch what breaks when you leave one out.',
+    '<b>Add a crop.</b> A seventh crop needs a colour (extend ' + c('SERIES') + ', but note the pie’s six-segment guidance), a config entry, at least one lot, a field, a planting and a pest. Watch what breaks when you leave one out.',
     '<b>A new advisory rule.</b> In ' + c('weather.deriveAdvisories') + ', add “frost risk” when ' + c('tempMin < 5') + '. Give it a severity, an icon and a window.',
     '<b>A new tile.</b> “Feed cost per day” on the cockpit from ' + c('ctx.snapshot.livestock.summary.feedPerDay') + '.',
     '<b>Sort the market table.</b> Copy the ' + c('bindSorting') + ' pattern from ' + c('farm.js') + ' to ' + c('live.js') + '.',
@@ -1331,12 +1331,12 @@ story.append(PageBreak())
 #  APPENDICES
 # =====================================================================
 
-H1('Appendix A — Where to change what')
+H1('Appendix A, Where to change what')
 TABLE(['I want to…', 'Edit', 'Notes'], [
     ['Change the brand name', 'shell.js line 68 (sidebar); <title> in each HTML; index.html', 'Never the last line of a JS file.'],
     ['Change the farm name / hectares', 'config.farm', 'Shows in the sidebar footer and greeting.'],
     ['Change a price’s source', 'config.crops[x].feed / livestock.products[x].feed', 'null = modelled; add proxy text if a related series stands in.'],
-    ['Change the panel or card tone', 'styles.css :root — --shell, --surface, --surface-sunk', 'Keep the steps evenly spaced or the layering stops reading.'],
+    ['Change the panel or card tone', 'styles.css :root, --shell, --surface, --surface-sunk', 'Keep the steps evenly spaced or the layering stops reading.'],
     ['Change the count pills', 'styles.css 264–281', 'Black by default; the ring is what separates them from the active chip.'],
     ['Change the top bar', 'styles.css 325–345', 'It is a flex row inside the panel, not a sticky bar.'],
     ['Add a page', 'a new HTML file + a page module + a NAV entry in shell.js', 'data-page on <body> must match the NAV id.'],
@@ -1348,13 +1348,13 @@ TABLE(['I want to…', 'Edit', 'Notes'], [
     ['Change a chart’s colours', 'styles.css tokens (--series-*, --chart-grid, --canopy-600)', 'charts.js reads them at boot with getComputedStyle.'],
 ], widths=[44 * mm, 66 * mm, 60 * mm])
 
-H1('Appendix B — Debugging checklist')
+H1('Appendix B, Debugging checklist')
 BUL([
-    '<b>A page is blank or stuck on “—”.</b> Console first. A red <i>SyntaxError</i> means a file did not parse — nothing after it ran. ' + c('node --check <file>') + ' finds it without a browser.',
-    '<b>One tile is stuck on “—”.</b> A ' + c('data-el') + ' name differs between HTML and JS. Search both.',
+    '<b>A page is blank or stuck on “, ”.</b> Console first. A red <i>SyntaxError</i> means a file did not parse, nothing after it ran. ' + c('node --check <file>') + ' finds it without a browser.',
+    '<b>One tile is stuck on “, ”.</b> A ' + c('data-el') + ' name differs between HTML and JS. Search both.',
     '<b>A style does not apply.</b> Elements tab → select the element → Styles. The winning rule is on top; losers are struck through. Check specificity (3.18) and that the media query matches your width.',
     '<b>The weather is “offline”.</b> Network tab → filter “open-meteo” → click the request → Response. HTTP 400 means a bad parameter; failed means no internet or a blocked host.',
-    '<b>Prices are all “modelled”.</b> ' + c('AgroSense.market.status') + ' in the console: ' + c('tier') + ', ' + c('lastError') + '. If HDX is down the snapshot should still load — check ' + c('data/prices-snapshot.js') + ' is in the script list.',
+    '<b>Prices are all “modelled”.</b> ' + c('AgroSense.market.status') + ' in the console: ' + c('tier') + ', ' + c('lastError') + '. If HDX is down the snapshot should still load, check ' + c('data/prices-snapshot.js') + ' is in the script list.',
     '<b>Something changed and will not go back.</b> It is in storage: ' + c('Object.keys(localStorage)') + ' lists the ' + c('agrosense.*') + ' keys; ' + c('localStorage.clear()') + ' resets the lot.',
     '<b>A number looks wrong.</b> Find the formula in Part 5, compute it by hand from ' + c('config.js') + ' and the quote, and compare. Then put a ' + c('console.log') + ' at the line that computes it.',
     '<b>The drawer will not open.</b> Only dashboard pages have it, and only under 860 px wide. Check the console for an error earlier in ' + c('shell.build()') + '.',

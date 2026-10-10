@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Bio Track operations — irrigation control and pest control driven by the forecast.">
+<meta name="description" content="Bio Track operations, irrigation control and pest control driven by the forecast.">
 <title>Operations · Bio Track</title>
 
 <link rel="icon" type="image/png" href="assets/favicon.png">
@@ -42,38 +42,38 @@
         <div class="tiles tiles-3">
           <div class="tile">
             <div class="tile-label"><svg class="icon"><use href="#i-valve"/></svg> Zones due now</div>
-            <div class="tile-value" data-el="irrDue">—</div>
-            <div class="tile-note" data-el="irrDueNote">—</div>
+            <div class="tile-value" data-el="irrDue">…</div>
+            <div class="tile-note" data-el="irrDueNote">…</div>
           </div>
           <div class="tile">
             <div class="tile-label"><svg class="icon"><use href="#i-droplet"/></svg> Water to apply</div>
-            <div class="tile-value" data-el="irrWater">—</div>
-            <div class="tile-note" data-el="irrWaterNote">—</div>
+            <div class="tile-value" data-el="irrWater">…</div>
+            <div class="tile-note" data-el="irrWaterNote">…</div>
           </div>
           <div class="tile">
             <div class="tile-label"><svg class="icon"><use href="#i-rain"/></svg> Rain covering crop demand</div>
-            <div class="tile-value" data-el="irrSaved">—</div>
-            <div class="tile-note" data-el="irrSavedNote">—</div>
+            <div class="tile-value" data-el="irrSaved">…</div>
+            <div class="tile-note" data-el="irrSavedNote">…</div>
           </div>
         </div>
 
         <div class="card" style="margin-top:1.1rem">
           <div class="card-head">
             <h3>Soil water deficit by zone</h3>
-            <span class="card-aside eyebrow" data-el="irrBalanceSource">—</span>
+            <span class="card-aside eyebrow" data-el="irrBalanceSource">…</span>
           </div>
           <div class="legend">
             <span class="legend-item"><span class="legend-swatch" style="background:var(--series-2)"></span> Current deficit</span>
             <span class="legend-item"><span class="legend-swatch" style="background:var(--series-1)"></span> Refill point</span>
           </div>
           <div class="chart-box mix"><canvas id="deficitChart" aria-label="Current soil water deficit against the refill point for each irrigation zone"></canvas></div>
-          <p class="chart-caption">A bar past its refill point means the crop is drawing on water it cannot easily reach. Rain-fed zones are shown for comparison — they have no valve to open.</p>
+          <p class="chart-caption">A bar past its refill point means the crop is drawing on water it cannot easily reach. Rain-fed zones are shown for comparison; they have no valve to open.</p>
         </div>
 
         <div class="card" style="margin-top:1.1rem">
           <div class="card-head">
             <h3>Zones</h3>
-            <span class="card-aside eyebrow" data-el="irrClockNote">—</span>
+            <span class="card-aside eyebrow" data-el="irrClockNote">…</span>
           </div>
           <div class="zone-list" data-el="zoneList"></div>
         </div>
@@ -91,18 +91,18 @@
         <div class="tiles tiles-3">
           <div class="tile">
             <div class="tile-label"><svg class="icon"><use href="#i-bug"/></svg> Needing action</div>
-            <div class="tile-value" data-el="pestUrgent">—</div>
-            <div class="tile-note" data-el="pestUrgentNote">—</div>
+            <div class="tile-value" data-el="pestUrgent">…</div>
+            <div class="tile-note" data-el="pestUrgentNote">…</div>
           </div>
           <div class="tile">
             <div class="tile-label"><svg class="icon"><use href="#i-spray"/></svg> Next spray window</div>
-            <div class="tile-value" data-el="pestWindow">—</div>
-            <div class="tile-note" data-el="pestWindowNote">—</div>
+            <div class="tile-value" data-el="pestWindow">…</div>
+            <div class="tile-note" data-el="pestWindowNote">…</div>
           </div>
           <div class="tile">
             <div class="tile-label"><svg class="icon"><use href="#i-shield"/></svg> Blocked from sale</div>
-            <div class="tile-value" data-el="pestBlocked">—</div>
-            <div class="tile-note" data-el="pestBlockedNote">—</div>
+            <div class="tile-value" data-el="pestBlocked">…</div>
+            <div class="tile-note" data-el="pestBlockedNote">…</div>
           </div>
         </div>
 
@@ -121,7 +121,7 @@
               <span class="legend-item"><span class="legend-swatch" style="background:var(--series-2)"></span> Generation threshold</span>
             </div>
             <div class="chart-box mix"><canvas id="ddChart" aria-label="Accumulated growing degree days against the threshold at which the next pest generation emerges"></canvas></div>
-            <p class="chart-caption" data-el="ddCaption">—</p>
+            <p class="chart-caption" data-el="ddCaption">…</p>
           </div>
 
           <div class="card">

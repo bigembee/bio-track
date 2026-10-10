@@ -256,7 +256,7 @@
 
     /* Water the farm does not have to pump because rain is covering the
        crop's demand. Counting the whole forecast deficit here would have
-       overstated it — a 4 mm shortfall would never have been irrigated in
+       overstated it; a 4 mm shortfall would never have been irrigated in
        the first place. What is genuinely displaced is the crop's own use
        over the next three days, up to the rain that actually arrives. */
     var savedM3 = zones.reduce(function (total, z) {

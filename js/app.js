@@ -95,12 +95,12 @@
     var ws = weather.status;
     setText(el('srcWeather'), ws.state === 'ok'
       ? 'Open-Meteo forecast API · HTTP 200 · ' + ws.latencyMs + ' ms' + (ws.restored ? ' (cached this session)' : '')
-      : ws.state === 'error' ? 'Open-Meteo · unavailable — ' + ws.lastError : 'Open-Meteo · loading');
+      : ws.state === 'error' ? 'Open-Meteo · unavailable, ' + ws.lastError : 'Open-Meteo · loading');
 
     var ms = market.status;
-    var text = ms.source + ' · ' + (ms.periodLabel || '—') + ' · ' + ms.liveCount + ' live, ' + ms.proxyCount + ' proxy, ' +
+    var text = ms.source + ' · ' + (ms.periodLabel || 'n/a') + ' · ' + ms.liveCount + ' live, ' + ms.proxyCount + ' proxy, ' +
                ms.modelledCount + ' modelled · ' + ms.tier +
-               (ms.state === 'error' ? ' — refresh failed: ' + ms.lastError : ms.lastError ? ' — ' + ms.lastError : '');
+               (ms.state === 'error' ? ', refresh failed: ' + ms.lastError : ms.lastError ? ', ' + ms.lastError : '');
     setText(el('srcMarket'), text);
   }
 
@@ -314,7 +314,7 @@
     }
 
     if (typeof Chart === 'undefined') {
-      console.warn('[AgroSense] Chart.js did not load — tables and figures still work, charts will be blank.');
+      console.warn('[AgroSense] Chart.js did not load, tables and figures still work, charts will be blank.');
     }
   }
 

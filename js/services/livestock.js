@@ -125,7 +125,7 @@
     cattle:  'Move to shade, keep troughs full, and shift feeding to early morning and evening.',
     sheep:   'Shade and water in the pens; shear or crutch heavy fleeces if it persists.',
     goat:    'Open the pens for airflow and put water in the shade; goats will not drink hot water.',
-    poultry: 'Run the fans, wet the roof, and feed at dawn — birds stop eating in the heat and lay less.',
+    poultry: 'Run the fans, wet the roof, and feed at dawn, birds stop eating in the heat and lay less.',
     fish:    'Aerate the ponds overnight and hold feeding during the hottest hours; warm water carries less oxygen.'
   };
 
