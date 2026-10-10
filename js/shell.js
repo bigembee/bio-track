@@ -324,7 +324,40 @@
     NS.store.local.set(READ_KEY, map);
   }
 
+  var drawnPermission = null;     // what the views were last drawn with
+
+  /**
+   * Browsers answer a permission prompt on their own schedule, and Chrome in
+   * particular may show the prompt as a small address-bar icon rather than a
+   * dialog - so the answer can arrive long after the click, or never through
+   * the promise at all. Rather than trust one callback, re-check whenever the
+   * window gets attention, and poll for a while after a request.
+   */
+  function syncPermission() {
+    var now = NS.harvest.permission();
+    if (drawnPermission !== null && now !== drawnPermission && NS.app) {
+      var became = now;
+      NS.app.renderAll();
+      if (became === 'granted') {
+        toast({ tone: 'good', icon: 'i-check', title: 'Harvest pings are on',
+                detail: 'You will get a browser notification once a day for each block that needs attention.' });
+      }
+    }
+  }
+
+  var permTimer = null;
+  function watchPermission() {
+    if (permTimer) return;
+    var ticks = 0;
+    permTimer = setInterval(function () {
+      syncPermission();
+      if (NS.harvest.permission() !== 'default' || ++ticks > 90) { clearInterval(permTimer); permTimer = null; }
+    }, 1000);
+  }
+
   function bindAlerts() {
+    window.addEventListener('focus', syncPermission);
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) syncPermission(); });
     var btn = document.getElementById('alertsBtn');
     var panel = document.getElementById('alertsPanel');
 
@@ -515,6 +548,7 @@
     // Browser pings: ask once, say where it stands after that.
     foot.innerHTML = '';
     var perm = NS.harvest.permission();
+    drawnPermission = perm;
     if (perm === 'granted') {
       var ok = tag('span', 'chip up');
       ok.appendChild(icon('i-check'));
@@ -551,6 +585,13 @@
         } else if (result === 'denied') {
           toast({ tone: 'warning', icon: 'i-alert', title: 'Notifications were blocked',
                   detail: 'To turn them on later, allow notifications for this site from the lock icon in the address bar.' });
+        } else {
+          // No answer: the prompt was dismissed or the browser tucked it away as an
+          // address-bar icon. Keep listening so an "Allow" there still turns this on.
+          toast({ tone: 'warning', icon: 'i-alert', title: 'Waiting for your browser',
+                  detail: 'Your browser did not confirm. Click the bell or lock icon at the left of the address bar and choose Allow - this will switch on by itself.',
+                  ms: 12000 });
+          watchPermission();
         }
       });
     });

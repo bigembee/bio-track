@@ -241,15 +241,10 @@
     setText(el('harvestWeekNote'), h.summary.next ? 'Next: ' + h.summary.next.cropName + ' in ' + h.summary.next.field + ' · ' + h.summary.next.when : 'No block opens this week');
     var perm = NS.harvest.permission();
     setText(el('harvestPings'), perm === 'granted' ? 'On' : perm === 'denied' ? 'Blocked' : perm === 'unsupported' ? 'n/a' : 'Off');
-    var action = el('harvestPingsAction');
-    if (action) {
-      action.innerHTML = '';
-      if (perm === 'default') action.appendChild(NS.shell.pingsButton());
-    }
     setText(el('harvestPingsNote'), perm === 'granted'
       ? 'Browser notifications fire once a day per block, from ' + cfg.harvest.leadDays + ' days out'
       : perm === 'denied' ? 'Notifications are blocked for this site in the browser settings'
-      : 'Get a browser notification when a block is ready to harvest');
+      : 'Enable browser pings from the bell in the top bar');
 
     h.rows.forEach(function (r) {
       var row = tag('div', 'planting');

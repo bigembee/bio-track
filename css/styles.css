@@ -2083,8 +2083,6 @@ th.sortable[aria-sort="descending"]::after { content: ' \2193'; color: var(--can
   border-radius: 50%;
   background: var(--canopy-600);
 }
-.tile-action { margin-top: 0.7rem; }
-.tile-action:empty { display: none; }
 
 /* A refresh that is running: the icon turns, and the control cannot be pressed again. */
 .is-spinning .icon { animation: spin 0.8s linear infinite; }
