@@ -62,7 +62,11 @@
     brand.title = 'Bio Track';
     brand.setAttribute('aria-label', 'Bio Track — go to the cockpit');
     var mark = tag('span', 'brand-mark');
-    mark.appendChild(icon('i-sprout'));
+    var logo = document.createElement('img');
+    logo.src = 'assets/favicon.png';
+    logo.alt = '';
+    logo.width = 44; logo.height = 44;
+    mark.appendChild(logo);
     brand.appendChild(mark);
     var names = tag('span', 'brand-text');
     names.appendChild(tag('span', 'brand-name', 'Bio Track'));

@@ -250,9 +250,7 @@ js/
     cockpit.js  live.js  operations.js  farm.js   one renderer per page
   app.js                  boot: services → compute → chrome → page
   landing.js              the landing page's live chips
-legacy/
-  index.original.html     the first static mock-up
-  index.single-page.html  the single-page dashboard this version replaced
+assets/                   logo files
 ```
 
 Plain scripts on a global `AgroSense` namespace rather than ES modules, so the
