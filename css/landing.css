@@ -326,6 +326,9 @@ h1 .accent {
   color: var(--ink-3);
 }
 
+/* the team credit: the one line in the footer that should be read, so it is brighter */
+.foot-credit { color: var(--ink-1, #f2f2f2); font-size: 0.78rem; font-weight: 500; }
+
 /* ---------- entrance ---------- */
 
 .reveal {

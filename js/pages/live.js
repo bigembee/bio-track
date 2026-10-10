@@ -256,7 +256,24 @@
         });
       });
       var refresh = document.getElementById('pricesRefreshBtn');
-      if (refresh) refresh.addEventListener('click', function () { market.refresh().catch(function () {}); });
+      if (refresh) refresh.addEventListener('click', function () {
+        if (refresh.disabled) return;
+        refresh.disabled = true;
+        refresh.classList.add('is-spinning');
+        market.refresh().then(function () { return null; }, function (e) { return e; }).then(function (err) {
+          refresh.disabled = false;
+          refresh.classList.remove('is-spinning');
+          var s = market.status;
+          NS.shell.toast({
+            tone: err ? 'warning' : 'good',
+            icon: err ? 'i-alert' : 'i-check',
+            title: err ? 'Prices could not be refreshed' : 'Prices refreshed',
+            detail: err ? s.lastError + ' — still showing the ' + s.tier + ' copy.'
+                        : s.periodLabel + ' · ' + s.liveCount + ' live, ' + s.proxyCount + ' proxy, ' + s.modelledCount + ' modelled',
+            ms: 5000
+          });
+        });
+      });
       setInterval(function () {
         setText(el('weatherAge'), weather.status.lastFetched ? 'Updated ' + fmt.ago(weather.status.lastFetched) : 'Not loaded');
       }, 15000);

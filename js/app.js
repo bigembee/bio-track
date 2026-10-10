@@ -147,15 +147,28 @@
 
   /* ---------- weather ---------- */
 
+  var weatherLoad = null;        // the request in flight, if any
+  var weatherLoadFor = null;     // ...and which location it is for
+
+  /**
+   * Asking again while a request for the same place is already running joins
+   * that request instead of starting another. Asking for a different place
+   * starts a fresh one, and the service discards the older response.
+   */
   function loadWeather() {
+    if (weatherLoad && weatherLoadFor === state.location.id) return weatherLoad;
+    weatherLoadFor = state.location.id;
     shell.setLiveState('loading', 'Loading');
-    return weather.load(state.location)
+    var p = weather.load(state.location)
       .then(function () { state.weatherError = null; })
       .catch(function (err) { state.weatherError = weather.status.lastError || err.message; })
       .then(function () {
         renderAll();
         pingHarvest();
       });
+    weatherLoad = p;
+    p.then(function () { if (weatherLoad === p) weatherLoad = null; });
+    return p;
   }
 
   /* ---------- harvest pings ---------- */
@@ -203,9 +216,32 @@
       loadWeather();
     });
 
-    document.getElementById('refreshBtn').addEventListener('click', function () {
-      loadWeather();
-      market.refresh().catch(function () { /* status carries it */ });
+    // The top-bar refresh updates both feeds. The button spins and is disabled
+    // while it runs, and a toast says how it went - the data is often identical,
+    // so without that a successful refresh looks exactly like a dead button.
+    var refreshBtn = document.getElementById('refreshBtn');
+    refreshBtn.addEventListener('click', function () {
+      if (refreshBtn.disabled) return;
+      refreshBtn.disabled = true;
+      refreshBtn.classList.add('is-spinning');
+      Promise.all([
+        loadWeather(),
+        market.refresh().then(function () { return null; }, function (e) { return e; })
+      ]).then(function (results) {
+        refreshBtn.disabled = false;
+        refreshBtn.classList.remove('is-spinning');
+        var weatherOk = weather.status.state === 'ok';
+        var pricesErr = results[1];
+        shell.toast({
+          tone: weatherOk && !pricesErr ? 'good' : 'warning',
+          icon: weatherOk && !pricesErr ? 'i-check' : 'i-alert',
+          title: weatherOk && !pricesErr ? 'Weather and prices refreshed' : 'Refresh finished with a problem',
+          detail: (weatherOk ? 'Forecast updated' : 'Forecast failed: ' + weather.status.lastError) + ' · ' +
+                  (pricesErr ? 'prices failed: ' + market.status.lastError + ', showing the ' + market.status.tier + ' copy'
+                             : (market.status.periodLabel || 'prices') + ' · ' + market.status.tier),
+          ms: 5000
+        });
+      });
     });
   }
 

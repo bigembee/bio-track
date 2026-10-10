@@ -288,25 +288,87 @@
     });
   }
 
+  /* =====================================================================
+     Alerts and read state
+     ---------------------------------------------------------------------
+     Every alert is derived from live conditions, so there is nothing to
+     "delete" - what can be tracked is whether the user has SEEN it. An
+     alert's key is its id plus its status, so one that escalates (ready
+     this week -> ready now) is a new alert and rings the bell again.
+
+     Opening the panel marks everything read and the count clears; the
+     rows that were new stay highlighted until the panel closes, so you can
+     still tell what you just learned. Clicking a row marks it read too.
+     ===================================================================== */
+
+  var READ_KEY = 'alertsRead';
+  var lastAssessment = null;
+  var openSnapshot = null;       // { key: true } of what was unread when the panel opened
+
+  function collectAlerts(assessment) {
+    var out = [];
+    assessment.alerts.forEach(function (a) {
+      out.push({ key: 'h:' + a.id + ':' + a.status, level: a.level, kind: 'harvest', data: a });
+    });
+    assessment.livestock.forEach(function (s) {
+      out.push({ key: 'l:' + s.id + ':' + s.status, level: s.level, kind: 'livestock', data: s });
+    });
+    return out;
+  }
+
+  function readMap() { return NS.store.local.get(READ_KEY, {}); }
+
+  function markRead(keys) {
+    var map = readMap();
+    keys.forEach(function (k) { map[k] = true; });
+    NS.store.local.set(READ_KEY, map);
+  }
+
   function bindAlerts() {
     var btn = document.getElementById('alertsBtn');
     var panel = document.getElementById('alertsPanel');
+
     btn.addEventListener('click', function () {
       var open = panel.hidden;
       panel.hidden = !open;
       btn.setAttribute('aria-expanded', String(open));
+
+      if (open && lastAssessment) {
+        var items = collectAlerts(lastAssessment);
+        var read = readMap();
+        openSnapshot = {};
+        items.forEach(function (it) { if (!read[it.key]) openSnapshot[it.key] = true; });
+        markRead(items.map(function (it) { return it.key; }));
+      } else {
+        openSnapshot = null;
+      }
+      if (lastAssessment) renderAlerts(lastAssessment);
     });
+
     document.addEventListener('click', function (e) {
       if (panel.hidden) return;
       if (panel.contains(e.target) || btn.contains(e.target)) return;
       closeAlerts();
     });
+
+    // The permission can change outside the page (the lock icon in the address
+    // bar, browser settings). Every view that shows it has to follow.
+    if (navigator.permissions && navigator.permissions.query) {
+      navigator.permissions.query({ name: 'notifications' }).then(function (status) {
+        status.onchange = function () { if (NS.app) NS.app.renderAll(); };
+      }).catch(function () { /* not every browser exposes it */ });
+    }
   }
 
   function closeAlerts() {
     var panel = document.getElementById('alertsPanel');
     var btn = document.getElementById('alertsBtn');
-    if (panel && !panel.hidden) { panel.hidden = true; btn.setAttribute('aria-expanded', 'false'); }
+    if (panel && !panel.hidden) {
+      panel.hidden = true;
+      btn.setAttribute('aria-expanded', 'false');
+      openSnapshot = null;
+      if (lastAssessment) renderAlerts(lastAssessment);
+    }
   }
 
   function renderIdentity() {
@@ -396,49 +458,57 @@
   }
 
   function renderAlerts(assessment) {
+    lastAssessment = assessment;
     var body = el('alertsBody');
     var foot = el('alertsFoot');
     if (!body) return;
     body.innerHTML = '';
 
-    var items = assessment.alerts.slice();
-    var stock = assessment.livestock;
+    var items = collectAlerts(assessment);
+    var read = readMap();
 
-    setCount('bellCount', assessment.summary.total, assessment.summary.urgent > 0);
-    el('bellCount').hidden = assessment.summary.total === 0;
-    setText(el('alertsSub'), assessment.summary.total
-      ? assessment.summary.urgent + ' urgent · ' + assessment.summary.total + ' total'
+    // Forget read marks for alerts that no longer exist, so one that comes
+    // back later is new again rather than silently pre-read.
+    var live = {};
+    items.forEach(function (it) { live[it.key] = true; });
+    var pruned = {}, changed = false;
+    Object.keys(read).forEach(function (k) { if (live[k]) pruned[k] = true; else changed = true; });
+    if (changed) { read = pruned; NS.store.local.set(READ_KEY, pruned); }
+
+    function isNew(it) { return openSnapshot ? !!openSnapshot[it.key] : !read[it.key]; }
+
+    var unread = items.filter(function (it) { return !read[it.key]; });
+    var fresh = items.filter(isNew);
+    var urgentUnread = unread.some(function (it) { return it.level === 'critical' || it.level === 'serious'; });
+
+    setCount('bellCount', unread.length, urgentUnread);
+    var bell = document.getElementById('alertsBtn');
+    if (bell) bell.setAttribute('aria-label', unread.length
+      ? 'Alerts, ' + unread.length + ' unread' : 'Alerts, all read');
+
+    setText(el('alertsSub'), items.length
+      ? fresh.length + ' new · ' + items.length + ' total'
       : 'Nothing due');
 
-    if (!items.length && !stock.length) {
+    if (!items.length) {
       body.appendChild(tag('p', 'chart-caption', 'No harvest inside the next ' + cfg.harvest.leadDays + ' days and no stock at market weight.'));
     }
 
-    items.forEach(function (a) {
-      var row = tag('a', 'alert-row');
-      row.href = 'farm.html#fields';
-      row.setAttribute('data-level', a.level);
+    items.forEach(function (it) {
+      var row = tag('a', 'alert-row ' + (isNew(it) ? 'is-new' : 'is-read'));
+      row.href = it.kind === 'harvest' ? 'farm.html#fields' : 'farm.html#livestock';
+      row.setAttribute('data-level', it.level);
       var glyph = tag('span', 'alert-icon');
-      glyph.appendChild(icon('i-harvest'));
+      glyph.appendChild(icon(it.kind === 'harvest' ? 'i-harvest' : 'i-cow'));
       row.appendChild(glyph);
       var txt = tag('div');
+      var a = it.data;
       txt.appendChild(tag('strong', null, a.title));
-      txt.appendChild(tag('span', 'alert-when', a.when + (a.phi ? ' · PHI holds' : '') + (a.weather && a.weather.openingWet ? ' · wet' : '')));
+      txt.appendChild(tag('span', 'alert-when', it.kind === 'harvest'
+        ? a.when + (a.phi ? ' · PHI holds' : '') + (a.weather && a.weather.openingWet ? ' · wet' : '')
+        : fmt.head(a.head) + ' · ' + a.label.toLowerCase()));
       row.appendChild(txt);
-      body.appendChild(row);
-    });
-
-    stock.forEach(function (s) {
-      var row = tag('a', 'alert-row');
-      row.href = 'farm.html#livestock';
-      row.setAttribute('data-level', s.level);
-      var glyph = tag('span', 'alert-icon');
-      glyph.appendChild(icon('i-cow'));
-      row.appendChild(glyph);
-      var txt = tag('div');
-      txt.appendChild(tag('strong', null, s.title));
-      txt.appendChild(tag('span', 'alert-when', fmt.head(s.head) + ' · ' + s.label.toLowerCase()));
-      row.appendChild(txt);
+      row.addEventListener('click', function () { markRead([it.key]); });
       body.appendChild(row);
     });
 
@@ -455,17 +525,36 @@
     } else if (perm === 'unsupported') {
       foot.appendChild(tag('span', 'chip', 'This browser cannot show notifications'));
     } else {
-      var btn = tag('button', 'btn btn-primary');
-      btn.appendChild(icon('i-bell'));
-      btn.appendChild(document.createTextNode('Enable harvest pings'));
-      btn.addEventListener('click', function () {
-        NS.harvest.requestPermission().then(function () {
-          renderAlerts(assessment);
-          NS.harvest.notify(assessment);
-        });
-      });
-      foot.appendChild(btn);
+      foot.appendChild(pingsButton());
     }
+  }
+
+  /**
+   * The one control that asks for notification permission. It lives in the bell
+   * panel and on the farm page's "Browser pings" tile; both call this so they
+   * behave identically and both refresh every view when the answer comes back.
+   */
+  function pingsButton() {
+    var btn = tag('button', 'btn btn-primary');
+    btn.type = 'button';
+    btn.appendChild(icon('i-bell'));
+    btn.appendChild(document.createTextNode('Enable harvest pings'));
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      NS.harvest.requestPermission().then(function (result) {
+        // Redraw everything that shows the permission: the bell panel, the farm tile.
+        if (NS.app) NS.app.renderAll();
+        if (result === 'granted') {
+          toast({ tone: 'good', icon: 'i-check', title: 'Harvest pings are on',
+                  detail: 'You will get a browser notification once a day for each block that needs attention.' });
+          if (NS.app && NS.app.state.ctx) NS.harvest.notify(NS.app.state.ctx.harvest);
+        } else if (result === 'denied') {
+          toast({ tone: 'warning', icon: 'i-alert', title: 'Notifications were blocked',
+                  detail: 'To turn them on later, allow notifications for this site from the lock icon in the address bar.' });
+        }
+      });
+    });
+    return btn;
   }
 
   function toast(opts) {
@@ -657,6 +746,7 @@
     renderAlerts: renderAlerts,
     toast: toast,
     closeAlerts: closeAlerts,
-    attachInfo: attachInfo
+    attachInfo: attachInfo,
+    pingsButton: pingsButton
   };
 })(window.AgroSense);

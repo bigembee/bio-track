@@ -367,6 +367,7 @@
   };
 
   var cache = null;
+  var loadToken = 0;
 
   /* The raw response is kept in sessionStorage so moving between pages
      does not re-query the API - the forecast has not changed in the two
@@ -404,6 +405,9 @@
 
     /** Fetch the forecast for a location, with one retry on failure. */
     load: function (location) {
+      // A slower, older request must never overwrite a newer one's result - or
+      // leave its timeout showing as the current state.
+      var token = ++loadToken;
       var url = buildUrl(location);
       var started = performance.now();
       status.state = 'loading';
@@ -418,6 +422,7 @@
           })
           .then(function (raw) {
             if (raw.error) throw new Error(raw.reason || 'Open-Meteo rejected the request');
+            if (token !== loadToken) return cache;          // superseded while in flight
             cache = normalise(raw, location);
             status.state = 'ok';
             status.lastFetched = Date.now();
@@ -428,6 +433,7 @@
             return cache;
           })
           .catch(function (err) {
+            if (token !== loadToken) return cache;          // superseded: its error is stale news
             if (retriesLeft > 0) return attempt(retriesLeft - 1);
             status.state = 'error';
             status.lastError = err.name === 'AbortError'
